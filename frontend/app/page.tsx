@@ -10,7 +10,7 @@ import GitHubRepoCount from '@/components/GitHubRepoCount';
 import PortfolioContent from '@/components/PortfolioContent';
 import CountUp from '@/components/CountUp';
 import MapWrapper from '@/components/MapWrapper';
-import { Download, Calendar, GraduationCap, Award, Mail, MapPin, Clock, Zap } from 'lucide-react';
+import { Download, Calendar, GraduationCap, Award, Mail, MapPin, Clock, Zap, GitBranch } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 
 // Fallback projects (used only if backend is unreachable)

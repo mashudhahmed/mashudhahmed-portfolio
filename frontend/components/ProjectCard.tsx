@@ -1,53 +1,61 @@
 'use client';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { Eye, ExternalLink } from 'lucide-react';
+import { ExternalLink, Eye } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 
 export default function ProjectCard({ project }: { project: any }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [15, -15]);
-  const rotateY = useTransform(x, [-100, 100], [-15, 15]);
-
-  function handleMouse(e: React.MouseEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left - rect.width / 2;
-    const mouseY = e.clientY - rect.top - rect.height / 2;
-    x.set(mouseX);
-    y.set(mouseY);
-  }
-
   return (
-    <motion.div
-      style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-      onMouseMove={handleMouse}
-      onMouseLeave={() => { x.set(0); y.set(0); }}
-      className="group relative glass-card overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/10"
-    >
+    <div className="group relative bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/10 cursor-pointer border border-gray-700 hover:border-green-500/50">
+      {/* Image section - zooms on hover */}
       <div className="relative h-48 w-full overflow-hidden">
         <img
           src={project.imageUrl}
           alt={project.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Dark overlay - appears on hover */}
+        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-medium hover:bg-green-600 transition-all duration-200 flex items-center gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <FaGithub className="w-4 h-4" />
+            GitHub
+          </a>
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-medium hover:bg-green-600 transition-all duration-200 flex items-center gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ExternalLink className="w-4 h-4" />
+              Live
+            </a>
+          )}
+        </div>
       </div>
 
+      {/* Content */}
       <div className="p-5">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-xl font-bold text-white line-clamp-1">{project.title}</h3>
           <div className="flex items-center gap-1 text-xs text-gray-400">
-            <Eye className="w-3 h-3" />
+            <Eye className="w-3.5 h-3.5" />
             {project.views}
           </div>
         </div>
         <p className="text-gray-300 text-sm line-clamp-2 mb-3">{project.description}</p>
 
-        <div className="flex flex-wrap gap-2 mb-4">
+        {/* Tech tags */}
+        <div className="flex flex-wrap gap-2">
           {project.technologies.slice(0, 3).map((tech: string) => (
             <span
               key={tech}
-              className="px-2 py-0.5 text-xs rounded-full bg-green-500/10 border border-green-500/30 text-green-400 group-hover:border-green-500/60 transition-colors"
+              className="px-2 py-0.5 text-xs rounded-full bg-green-500/10 border border-green-500/30 text-green-400 transition-all duration-200 group-hover:border-green-500/60 group-hover:bg-green-500/20"
             >
               {tech}
             </span>
@@ -58,34 +66,7 @@ export default function ProjectCard({ project }: { project: any }) {
             </span>
           )}
         </div>
-
-        <div className="flex gap-4">
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-sm text-gray-300 hover:text-green-400 transition"
-          >
-            <FaGithub className="w-4 h-4" />
-            <span>Code</span>
-          </a>
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-sm text-gray-300 hover:text-green-400 transition"
-            >
-              <ExternalLink className="w-4 h-4" />
-              <span>Live</span>
-            </a>
-          )}
-        </div>
       </div>
-
-      <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500/20 via-cyan-500/20 to-blue-500/20 blur-xl" />
-      </div>
-    </motion.div>
+    </div>
   );
 }

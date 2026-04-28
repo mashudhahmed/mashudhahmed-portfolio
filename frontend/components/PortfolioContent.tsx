@@ -247,7 +247,7 @@ export default function PortfolioContent({ projects }: PortfolioContentProps) {
                 onClick={() => setSelectedTech(null)}
                 className="text-sm text-green-400 hover:text-green-300 transition"
               >
-                ❌ Clear filter
+            
               </button>
             </div>
           )}
