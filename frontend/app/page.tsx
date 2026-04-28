@@ -265,8 +265,8 @@ export default async function Home() {
             <FaEnvelope className="w-6 h-6" />
           </a>
         </div>
-        <p className="mb-2 text-gray-400">mashudh.ahmed@outlook.com</p>
-        <p>© {new Date().getFullYear()} Mashudh Ahmed. Built with Next.js & NestJS.</p>
+      
+        <p>© {new Date().getFullYear()} Mashudh Ahmed. All rights reserved.</p>
         <BackToTopButton />
       </footer>
     </main>
