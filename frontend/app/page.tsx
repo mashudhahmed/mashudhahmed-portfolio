@@ -10,7 +10,7 @@ import GitHubRepoCount from '@/components/GitHubRepoCount';
 import PortfolioContent from '@/components/PortfolioContent';
 import CountUp from '@/components/CountUp';
 import MapWrapper from '@/components/MapWrapper';
-import { Download, Calendar, GraduationCap, Award, Mail, MapPin } from 'lucide-react';
+import { Download, Calendar, GraduationCap, Award, Mail, MapPin, Clock, Zap } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 
 // Fallback projects (used only if backend is unreachable)
@@ -191,44 +191,65 @@ export default async function Home() {
       {/* Skills + Projects (client component) */}
       <PortfolioContent projects={projects} />
 
-      {/* Contact Section – Compact with Taller Map */}
-<ScrollReveal>
-  <section id="contact" className="relative z-10 py-10 px-4 max-w-6xl mx-auto">
-    <div className="text-center mb-5">
-      <h2 className="text-3xl font-bold text-white">Get In Touch</h2>
-      <div className="w-16 h-0.5 bg-green-500 mx-auto mt-2 rounded-full" />
-      <p className="text-gray-400 text-xs max-w-xl mx-auto mt-2">
-        Have a project? Let's connect and build something great.
-      </p>
-    </div>
-    <div className="grid md:grid-cols-2 gap-5 items-stretch">
-      {/* Contact Form – reduced internal padding via ContactForm component (optional) */}
-      <div>
-        <ContactForm />
-      </div>
-      {/* Info Card with Taller Map */}
-      <div className="glass-card p-4 flex flex-col h-full">
-        <div className="flex items-center gap-1.5 mb-2">
-          <MapPin className="w-4 h-4 text-green-400" />
-          <h3 className="text-sm font-semibold text-white">Location</h3>
-        </div>
-        <MapWrapper />
-        <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-700">
-          <div className="flex items-center gap-1.5 text-gray-300 text-xs">
-            <Mail className="w-3 h-3 text-green-400" />
-            <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition truncate">
-              mashudh.ahmed@outlook.com
-            </a>
+      {/* Contact Section – Compact with tall map and fillers */}
+      <ScrollReveal>
+        <section id="contact" className="relative z-10 py-8 px-4 max-w-5xl mx-auto">
+          <div className="text-center mb-4">
+            <h2 className="text-2xl font-bold text-white">Get In Touch</h2>
+            <div className="w-12 h-0.5 bg-green-500 mx-auto mt-1.5 rounded-full" />
+            <p className="text-gray-400 text-xs max-w-xl mx-auto mt-1.5">
+              Have a project? Let's connect.
+            </p>
           </div>
-          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[10px] border border-green-500/30">
-            <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-            Available
+          <div className="grid md:grid-cols-2 gap-4 items-stretch">
+            {/* Contact Form */}
+            <div className="h-full">
+              <ContactForm />
+            </div>
+            {/* Info Card – with tall map and fillers */}
+            <div className="glass-card p-3 flex flex-col h-full">
+              <div className="flex items-center gap-1.5 mb-1">
+                <MapPin className="w-3.5 h-3.5 text-green-400" />
+                <h3 className="text-xs font-semibold text-white uppercase tracking-wide">Location</h3>
+              </div>
+              <div className="w-full h-[350px] rounded-lg overflow-hidden">
+                <MapWrapper />
+              </div>
+              
+              {/* Fillers below the map */}
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center justify-between text-[11px]">
+                  <div className="flex items-center gap-1.5 text-gray-400">
+                    <Clock className="w-3 h-3 text-green-400" />
+                    <span>Working Hours</span>
+                  </div>
+                  <span className="text-gray-300">Mon-Fri, 9AM-6PM UTC+6</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <div className="flex items-center gap-1.5 text-gray-400">
+                    <Zap className="w-3 h-3 text-green-400" />
+                    <span>Response Time</span>
+                  </div>
+                  <span className="text-gray-300">Within 24 hours</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-700">
+                <div className="flex items-center gap-1 text-gray-300 text-[11px]">
+                  <Mail className="w-2.5 h-2.5 text-green-400" />
+                  <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition truncate max-w-[150px]">
+                    mashudh.ahmed@outlook.com
+                  </a>
+                </div>
+                <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[9px] border border-green-500/30">
+                  <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse" />
+                  Available
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</ScrollReveal>
+        </section>
+      </ScrollReveal>
 
       <TerminalButton />
 
