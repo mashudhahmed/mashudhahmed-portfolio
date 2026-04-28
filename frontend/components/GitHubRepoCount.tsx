@@ -16,11 +16,7 @@ export default function GitHubRepoCount({ username, fallback = 24 }: GitHubRepoC
   useEffect(() => {
     if (inView && count === null && !error) {
       fetch(`https://api.github.com/users/${username}`)
-        .then(res => {
-          if (res.status === 404) throw new Error('User not found');
-          if (!res.ok) throw new Error('GitHub API error');
-          return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
           if (data.public_repos !== undefined) {
             setCount(data.public_repos);
@@ -28,20 +24,17 @@ export default function GitHubRepoCount({ username, fallback = 24 }: GitHubRepoC
             setCount(fallback);
           }
         })
-        .catch(err => {
-          console.error('GitHub API fetch failed:', err);
+        .catch(() => {
           setError(true);
           setCount(fallback);
         });
     }
   }, [inView, username, count, error, fallback]);
 
-  // Show nothing until we have a count (avoid flicker)
   if (count === null) {
     return <span ref={ref}>—</span>;
   }
 
-  // Animate the count using CountUp
   return (
     <span ref={ref}>
       <CountUp end={count} suffix="" />

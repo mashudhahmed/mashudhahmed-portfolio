@@ -8,7 +8,9 @@ import Navbar from '@/components/Navbar';
 import ScrollReveal from '@/components/ScrollReveal';
 import GitHubRepoCount from '@/components/GitHubRepoCount';
 import PortfolioContent from '@/components/PortfolioContent';
-import { Download, Calendar, Award } from 'lucide-react';
+import CountUp from '@/components/CountUp';
+import MapWrapper from '@/components/MapWrapper';
+import { Download, Calendar, GraduationCap, Award, Mail, MapPin } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 
 // Fallback projects (used only if backend is unreachable)
@@ -48,7 +50,6 @@ const fallbackProjects = [
 async function getProjects() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
-      cache: 'no-store',
       next: { revalidate: 60 },
     });
     if (!res.ok) {
@@ -73,6 +74,7 @@ export default async function Home() {
       <Navbar />
       <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_transparent_30%,_black_85%)] z-0" />
 
+      {/* Hero Section */}
       <section className="relative z-10 h-screen flex items-center justify-center text-center px-4">
         <FloatingIcons />
         <div className="max-w-4xl mx-auto">
@@ -100,6 +102,7 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* About + Education */}
       <ScrollReveal>
         <section id="about" className="relative z-10 py-24 px-4 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -110,12 +113,33 @@ export default async function Home() {
                   <img src="/your-photo.jpg" alt="Mashudh Ahmed" className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
+                {/* Stats card */}
                 <div className="glass-card p-6 text-center relative">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <div><div className="text-3xl font-bold text-green-400">3+</div><div className="text-xs text-gray-400">Years Coding</div></div>
-                    <div><div className="text-3xl font-bold text-green-400">{projectCount}+</div><div className="text-xs text-gray-400">Projects</div></div>
-                    <div><div className="text-3xl font-bold text-green-400">520+</div><div className="text-xs text-gray-400">GitHub Commits</div></div>
-                    <div><div className="text-3xl font-bold text-green-400"><GitHubRepoCount username="mashudhahmed" fallback={24} /></div><div className="text-xs text-gray-400">GitHub Repos</div></div>
+                    <div>
+                      <div className="text-3xl font-bold text-green-400">
+                        <CountUp end={3} suffix="+" />
+                      </div>
+                      <div className="text-xs text-gray-400">Years Coding</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-green-400">
+                        <CountUp end={projectCount} suffix="+" />
+                      </div>
+                      <div className="text-xs text-gray-400">Projects</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-green-400">
+                        <CountUp end={520} suffix="+" />
+                      </div>
+                      <div className="text-xs text-gray-400">GitHub Commits</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-green-400">
+                        <GitHubRepoCount username="mashudhahmed" fallback={24} />
+                      </div>
+                      <div className="text-xs text-gray-400">GitHub Repos</div>
+                    </div>
                   </div>
                   <div className="mt-4 pt-4 border-t border-white/10">
                     <p className="text-xs text-gray-400 italic">“Code is poetry written in logic.”</p>
@@ -127,14 +151,19 @@ export default async function Home() {
             <ScrollReveal direction="right" delay={0.2}>
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">About Me</h2>
+                  <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
+                    About Me
+                  </h2>
                   <div className="w-20 h-1 bg-green-500 mt-3 mb-6 rounded-full" />
                   <p className="text-lg text-gray-300 leading-relaxed">
-                    I'm <span className="text-green-400 font-semibold">Mashudh Ahmed</span>, a CSE student majoring in <strong className="text-green-300">Software Engineering</strong>. I build high‑performance web applications with Next.js, NestJS, and PostgreSQL.
+                    I'm <span className="text-green-400 font-semibold">Mashudh Ahmed</span>, a CSE student majoring in <strong className="text-green-300">Software Engineering</strong>. I build high‑performance web applications with Next.js, NestJS, and PostgreSQL. I love solving complex problems with clean, elegant code.
                   </p>
                 </div>
                 <div className="glass-card p-6 space-y-4">
-                  <div className="flex items-center gap-3"><Award className="w-7 h-7 text-green-400" /><h3 className="text-2xl font-semibold">Education</h3></div>
+                  <div className="flex items-center gap-3">
+                    <GraduationCap className="w-7 h-7 text-green-400" />
+                    <h3 className="text-2xl font-semibold">Education</h3>
+                  </div>
                   <div className="space-y-3 pl-2">
                     <div className="flex items-start gap-3">
                       <Calendar className="w-5 h-5 text-green-400 mt-1 shrink-0" />
@@ -159,22 +188,61 @@ export default async function Home() {
         </section>
       </ScrollReveal>
 
+      {/* Skills + Projects (client component) */}
       <PortfolioContent projects={projects} />
 
-      <ScrollReveal>
-        <section id="contact" className="relative z-10 py-24 px-4 max-w-2xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-6">Get In Touch</h2>
-          <ContactForm />
-        </section>
-      </ScrollReveal>
+      {/* Contact Section – Compact with Taller Map */}
+<ScrollReveal>
+  <section id="contact" className="relative z-10 py-10 px-4 max-w-6xl mx-auto">
+    <div className="text-center mb-5">
+      <h2 className="text-3xl font-bold text-white">Get In Touch</h2>
+      <div className="w-16 h-0.5 bg-green-500 mx-auto mt-2 rounded-full" />
+      <p className="text-gray-400 text-xs max-w-xl mx-auto mt-2">
+        Have a project? Let's connect and build something great.
+      </p>
+    </div>
+    <div className="grid md:grid-cols-2 gap-5 items-stretch">
+      {/* Contact Form – reduced internal padding via ContactForm component (optional) */}
+      <div>
+        <ContactForm />
+      </div>
+      {/* Info Card with Taller Map */}
+      <div className="glass-card p-4 flex flex-col h-full">
+        <div className="flex items-center gap-1.5 mb-2">
+          <MapPin className="w-4 h-4 text-green-400" />
+          <h3 className="text-sm font-semibold text-white">Location</h3>
+        </div>
+        <MapWrapper />
+        <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-700">
+          <div className="flex items-center gap-1.5 text-gray-300 text-xs">
+            <Mail className="w-3 h-3 text-green-400" />
+            <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition truncate">
+              mashudh.ahmed@outlook.com
+            </a>
+          </div>
+          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[10px] border border-green-500/30">
+            <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+            Available
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</ScrollReveal>
 
       <TerminalButton />
 
       <footer className="relative z-10 border-t border-gray-800 py-10 text-center text-gray-500 text-sm">
         <div className="flex justify-center gap-6 mb-4">
-          <a href="https://github.com/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaGithub className="w-6 h-6" /></a>
-          <a href="https://www.linkedin.com/in/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaLinkedin className="w-6 h-6" /></a>
-          <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition"><FaEnvelope className="w-6 h-6" /></a>
+          <a href="https://github.com/mashudhahmed" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition">
+            <FaGithub className="w-6 h-6" />
+          </a>
+          <a href="https://www.linkedin.com/in/mashudhahmed" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition">
+            <FaLinkedin className="w-6 h-6" />
+          </a>
+          <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition">
+            <FaEnvelope className="w-6 h-6" />
+          </a>
         </div>
         <p className="mb-2 text-gray-400">mashudh.ahmed@outlook.com</p>
         <p>© {new Date().getFullYear()} Mashudh Ahmed. Built with Next.js & NestJS.</p>
