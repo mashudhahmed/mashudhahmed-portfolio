@@ -77,7 +77,7 @@ export default function AdminLogin() {
         </form>
 
         <p className="text-center text-gray-500 text-xs mt-6">
-          Use the ADMIN_TOKEN from your backend .env file
+        
         </p>
       </div>
     </div>
