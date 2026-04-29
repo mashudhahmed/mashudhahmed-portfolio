@@ -16,7 +16,10 @@ export default function GitHubRepoCount({ username, fallback = 24 }: GitHubRepoC
   useEffect(() => {
     if (inView && count === null && !error) {
       fetch(`https://api.github.com/users/${username}`)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('GitHub API error');
+          return res.json();
+        })
         .then(data => {
           if (data.public_repos !== undefined) {
             setCount(data.public_repos);

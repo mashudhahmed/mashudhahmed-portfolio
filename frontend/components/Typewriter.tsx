@@ -1,42 +1,32 @@
 'use client';
 import { useState, useEffect } from 'react';
 
-const phrases = ['Full‑Stack Developer', 'Problem Solver', 'Tech Enthusiast'];
+interface TypewriterProps {
+  phrases: string[];
+}
 
-export default function Typewriter() {
-  const [displayText, setDisplayText] = useState('');
+export default function Typewriter({ phrases }: TypewriterProps) {
   const [index, setIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isWaiting, setIsWaiting] = useState(false);
+  const [subIndex, setSubIndex] = useState(0);
+  const [reverse, setReverse] = useState(false);
 
   useEffect(() => {
-    if (isWaiting) return;
-
-    const currentPhrase = phrases[index];
+    if (!phrases.length) return;
+    if (subIndex === phrases[index].length + 1 && !reverse) {
+      setReverse(true);
+      return;
+    }
+    if (subIndex === 0 && reverse) {
+      setReverse(false);
+      setIndex((prev) => (prev + 1) % phrases.length);
+      return;
+    }
     const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        // typing
-        setDisplayText(currentPhrase.substring(0, displayText.length + 1));
-        if (displayText.length + 1 === currentPhrase.length) {
-          // finished typing, wait then delete
-          setIsWaiting(true);
-          setTimeout(() => {
-            setIsWaiting(false);
-            setIsDeleting(true);
-          }, 2000);
-        }
-      } else {
-        // deleting
-        setDisplayText(currentPhrase.substring(0, displayText.length - 1));
-        if (displayText.length - 1 === 0) {
-          setIsDeleting(false);
-          setIndex((prev) => (prev + 1) % phrases.length);
-        }
-      }
-    }, isDeleting ? 50 : 100);
-
+      setSubIndex((prev) => prev + (reverse ? -1 : 1));
+    }, 100);
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, index, isWaiting]);
+  }, [subIndex, index, reverse, phrases]);
 
-  return <>{displayText}</>;
+  if (!phrases.length) return null;
+  return <>{phrases[index].substring(0, subIndex)}</>;
 }

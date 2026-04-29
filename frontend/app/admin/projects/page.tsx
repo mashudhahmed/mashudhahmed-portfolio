@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Edit, Trash2, Eye, ExternalLink } from 'lucide-react';
+import ImageUpload from '@/components/ImageUpload';
+import { FaGithub } from 'react-icons/fa';
 
 interface Project {
   id: number;
@@ -154,7 +156,9 @@ export default function AdminProjects() {
             <div className="relative h-40 rounded-lg overflow-hidden mb-3">
               <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-               
+                <a href={project.githubUrl} target="_blank" className="p-2 rounded-full bg-white/10 hover:bg-green-600 transition">
+                  <FaGithub className="w-4 h-4 text-white" />
+                </a>
                 {project.liveUrl && (
                   <a href={project.liveUrl} target="_blank" className="p-2 rounded-full bg-white/10 hover:bg-green-600 transition">
                     <ExternalLink className="w-4 h-4 text-white" />
@@ -194,7 +198,7 @@ export default function AdminProjects() {
         ))}
       </div>
 
-      {/* Add/Edit Modal */}
+      {/* Add/Edit Modal with Image Upload */}
       {showModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
           <div className="glass-card p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -224,14 +228,17 @@ export default function AdminProjects() {
                 className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
               />
-              <input
-                type="url"
-                placeholder="Image URL"
-                value={form.imageUrl}
-                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
+              
+              {/* ✅ Image Upload Component instead of URL input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Project Image</label>
+                <ImageUpload
+                  onUpload={(url) => setForm({ ...form, imageUrl: url })}
+                  currentImage={form.imageUrl}
+                  folder="projects"
+                />
+              </div>
+              
               <input
                 type="url"
                 placeholder="GitHub URL"
@@ -245,7 +252,7 @@ export default function AdminProjects() {
                 placeholder="Live URL (optional)"
                 value={form.liveUrl}
                 onChange={(e) => setForm({ ...form, liveUrl: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white"
               />
               <div className="flex gap-3 pt-4">
                 <button type="submit" disabled={submitting} className="flex-1 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition disabled:opacity-50">

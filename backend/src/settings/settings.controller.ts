@@ -8,13 +8,13 @@ export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
   @Get()
-  getSettings() {
+  async getSettings() {
     return this.settingsService.getSettings();
   }
 
   @Put()
   @UseGuards(AdminGuard)
-  updateSettings(@Body() dto: UpdateSettingsDto) {
+  async updateSettings(@Body() dto: UpdateSettingsDto) {
     return this.settingsService.updateSettings(dto);
   }
 }

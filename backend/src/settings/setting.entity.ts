@@ -5,7 +5,7 @@ export class Setting {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ unique: true })  // ← ADD unique: true
   key!: string;
 
   @Column('text')

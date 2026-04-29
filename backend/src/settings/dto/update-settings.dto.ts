@@ -5,10 +5,6 @@ export class UpdateSettingsDto {
   @IsOptional()
   siteTitle?: string;
 
-  @IsString()
-  @IsOptional()
-  heroGradient?: string;
-
   @IsArray()
   @IsOptional()
   typewriterPhrases?: string[];
