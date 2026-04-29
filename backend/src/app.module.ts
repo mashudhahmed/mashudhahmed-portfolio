@@ -17,6 +17,8 @@ import { About } from './about/about.entity';
 import { ContactInfo } from './contact-info/contact-info.entity';
 import { SocialLink } from './social/social.entity';
 import { Setting } from './settings/setting.entity';
+import { ContactModule } from './contact/contact.module';
+import { Message } from './contact/message.entity';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { Setting } from './settings/setting.entity';
         username: config.get('DB_USERNAME'),
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_DATABASE'),
-        entities: [Project,Visitor, Skill, About, ContactInfo, SocialLink, Setting],
+        entities: [Project,Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message],
         synchronize: config.get('NODE_ENV') !== 'production',
       }),
     }),
@@ -43,6 +45,7 @@ import { Setting } from './settings/setting.entity';
     SocialModule,
     SettingsModule,
     StatsModule,
+    ContactModule
   ],
 })
 export class AppModule {}

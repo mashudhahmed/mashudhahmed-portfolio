@@ -22,7 +22,7 @@ export default function ContactForm() {
     if (!validate()) return;
     setStatus('sending');
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -40,7 +40,7 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card p-6 md:p-8 space-y-6">
+    <form onSubmit={handleSubmit} className="glass-card p-6 space-y-4">
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
         <input

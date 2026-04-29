@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AdminGuard } from './admin.guard';
 
@@ -12,7 +12,7 @@ export class AdminController {
     if (body.token === expectedToken) {
       return { success: true, message: 'Token is valid' };
     }
-    return { success: false, message: 'Invalid token' };
+    throw new UnauthorizedException('Invalid token');
   }
 
   @Get('status')
