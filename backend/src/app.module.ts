@@ -27,14 +27,10 @@ import { Message } from './contact/message.entity';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        host: config.get('DB_HOST'),
-        port: +config.get('DB_PORT'),
-        username: config.get('DB_USERNAME'),
-        password: config.get('DB_PASSWORD'),
-        database: config.get('DB_DATABASE'),
-        entities: [Project,Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message],
+        url: config.get('DATABASE_URL'),
+        entities: [Project, Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message],
         synchronize: config.get('NODE_ENV') !== 'production',
-        ssl: config.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,  // ← ONLY SSL in production
+        ssl: { rejectUnauthorized: false },
       }),
     }),
     ProjectsModule,
@@ -46,7 +42,7 @@ import { Message } from './contact/message.entity';
     SocialModule,
     SettingsModule,
     StatsModule,
-    ContactModule
+    ContactModule,
   ],
 })
 export class AppModule {}
