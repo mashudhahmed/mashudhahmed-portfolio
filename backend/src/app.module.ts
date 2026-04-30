@@ -34,6 +34,7 @@ import { Message } from './contact/message.entity';
         database: config.get('DB_DATABASE'),
         entities: [Project,Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message],
         synchronize: config.get('NODE_ENV') !== 'production',
+        ssl: config.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,  // ← ONLY SSL in production
       }),
     }),
     ProjectsModule,
