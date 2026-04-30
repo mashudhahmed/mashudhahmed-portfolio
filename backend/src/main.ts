@@ -4,24 +4,14 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Allow both local development and production
-  const allowedOrigins = [
-    'http://localhost:3000',           // Local frontend
-    'https://your-frontend.vercel.app', // Replace with your Vercel URL
-    'https://your-custom-domain.com',   // If you have a custom domain
-  ];
-  
   app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: [
+      'http://localhost:3000',
+      'https://mashudhahmed.vercel.app',
+    ],
     credentials: true,
   });
   
-  await app.listen(4000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
