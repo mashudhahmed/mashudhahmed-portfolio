@@ -30,6 +30,32 @@ interface PortfolioContentProps {
   projects: Project[];
 }
 
+// Original brand colors for each technology
+const getIconColor = (skillName: string): string => {
+  const colors: Record<string, string> = {
+    JavaScript: '#F7DF1E',
+    TypeScript: '#3178C6',
+    React: '#61DAFB',
+    'Next.js': '#ffffff',
+    TailwindCSS: '#38BDF8',
+    HTML5: '#E34F26',
+    'Framer Motion': '#0055FF',
+    'Node.js/NestJS': '#E0234E',
+    'REST APIs': '#85EA2D',
+    JWT: '#000000',
+    Docker: '#2496ED',
+    'Git/GitHub': '#181717',
+    Postman: '#FF6C37',
+    'Swagger UI': '#85EA2D',
+    PostgreSQL: '#4169E1',
+    TypeORM: '#FE0903',
+    Firebase: '#FFCA28',
+    'C++': '#00599C',
+    Kotlin: '#7F52FF',
+  };
+  return colors[skillName] || '#4ade80';
+};
+
 const getLevelConfig = (level: string) => {
   switch (level) {
     case 'EXPERT':
@@ -72,6 +98,7 @@ const SkillBar = ({ level, inView }: { level: string; inView: boolean }) => {
 const SkillItem = ({ skill }: { skill: Skill }) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
   const { textColor } = getLevelConfig(skill.level);
+  const iconColor = getIconColor(skill.name);
   const IconComponent = getIconComponent(skill.icon);
 
   return (
@@ -80,7 +107,7 @@ const SkillItem = ({ skill }: { skill: Skill }) => {
       className="flex flex-col p-3 rounded-xl bg-gray-900/50 border border-gray-700 transition-all duration-200 hover:scale-105 hover:border-green-500/50 cursor-default"
     >
       <div className="flex items-center gap-3 mb-1">
-        <IconComponent className="w-6 h-6 text-gray-400 group-hover:text-green-400 transition" />
+        <IconComponent className="w-6 h-6" style={{ color: iconColor }} />
         <span className="font-medium text-white text-sm">{skill.name}</span>
       </div>
       <SkillBar level={skill.level} inView={inView} />
@@ -97,12 +124,16 @@ export default function PortfolioContent({ projects }: PortfolioContentProps) {
     const fetchSkills = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/skills`);
-        if (!res.ok) {
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+            setSkills(data);
+          } else {
+            setSkills(fallbackSkills as Skill[]);
+          }
+        } else {
           setSkills(fallbackSkills as Skill[]);
-          return;
         }
-        const data = await res.json();
-        setSkills(data.length > 0 ? data : fallbackSkills as Skill[]);
       } catch (error) {
         console.error('Failed to fetch skills, using fallback:', error);
         setSkills(fallbackSkills as Skill[]);
@@ -156,7 +187,7 @@ export default function PortfolioContent({ projects }: PortfolioContentProps) {
         </section>
       </ScrollReveal>
 
-      {/* Projects Section - Always show all projects */}
+      {/* Projects Section */}
       <ScrollReveal>
         <section id="projects" className="relative z-10 py-24 px-4 max-w-7xl mx-auto">
           <div className="text-center mb-12">

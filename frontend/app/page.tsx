@@ -114,23 +114,26 @@ export default async function Home() {
       <ScrollReveal>
         <section id="about" className="relative z-10 py-24 px-4 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* LEFT COLUMN - Profile Image with Badge Inside */}
             <ScrollReveal direction="left" delay={0.1}>
               <div className="space-y-8 relative">
                 <div className="absolute -left-8 top-1/4 w-32 h-32 rounded-full bg-green-500/20 blur-2xl -z-10" />
+                
+                {/* Profile Image Container - Badge inside bottom right */}
                 <div className="relative w-80 h-80 mx-auto rounded-2xl overflow-hidden border-4 border-green-500/50 shadow-2xl group">
                   <img src={about.photoUrl} alt="Mashudh Ahmed" className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-
-                {/* Availability Badge */}
-                <div className="flex justify-end">
-                  <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${
-                    contactInfo.availableForWork 
-                      ? 'bg-green-500/15 text-green-400 border-green-500/40' 
-                      : 'bg-red-500/15 text-red-400 border-red-500/40'
-                  }`}>
-                    <div className={`w-1.5 h-1.5 rounded-full ${contactInfo.availableForWork ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
-                    {contactInfo.availableForWork ? 'Available for work' : 'Not available'}
+                  
+                  {/* Availability Badge - Inside image, bottom right corner */}
+                  <div className="absolute bottom-3 right-3 z-10">
+                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium border backdrop-blur-sm ${
+                      contactInfo.availableForWork 
+                        ? 'bg-green-500/80 text-white border-green-400' 
+                        : 'bg-red-500/80 text-white border-red-400'
+                    }`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${contactInfo.availableForWork ? 'bg-white animate-pulse' : 'bg-white'}`} />
+                      {contactInfo.availableForWork ? 'Available' : 'Not Available'}
+                    </div>
                   </div>
                 </div>
 
@@ -149,6 +152,7 @@ export default async function Home() {
               </div>
             </ScrollReveal>
 
+            {/* RIGHT COLUMN - About Text + Education */}
             <ScrollReveal direction="right" delay={0.2}>
               <div className="space-y-8">
                 <div>
@@ -185,7 +189,7 @@ export default async function Home() {
       {/* Skills + Projects */}
       <PortfolioContent projects={projects} />
 
-      {/* Contact Section */}
+      {/* Contact Section - Taller Map + Full Email Container */}
       <ScrollReveal>
         <section id="contact" className="relative z-10 py-8 px-4 max-w-5xl mx-auto">
           <div className="text-center mb-4">
@@ -194,16 +198,54 @@ export default async function Home() {
             <p className="text-gray-400 text-xs max-w-xl mx-auto mt-1.5">Have a project? Let's connect.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 items-stretch">
-            <div className="h-full"><ContactForm /></div>
+            {/* Contact Form */}
+            <div className="h-full">
+              <ContactForm />
+            </div>
+            
+            {/* Right Card - Taller Map + Full Email Container */}
             <div className="glass-card p-3 flex flex-col h-full">
-              <div className="flex items-center gap-1.5 mb-1"><MapPin className="w-3.5 h-3.5 text-green-400" /><h3 className="text-xs font-semibold text-white uppercase tracking-wide">Location</h3></div>
-              <div className="w-full h-[140px] rounded-lg overflow-hidden"><MapWrapper /></div>
-              <div className="mt-3 space-y-2">
-                <div className="flex items-center justify-between text-[11px]"><div className="flex items-center gap-1.5 text-gray-400"><Clock className="w-3 h-3 text-green-400" /><span>Working Hours</span></div><span className="text-gray-300">{contactInfo.workingHours}</span></div>
-                <div className="flex items-center justify-between text-[11px]"><div className="flex items-center gap-1.5 text-gray-400"><Zap className="w-3 h-3 text-green-400" /><span>Response Time</span></div><span className="text-gray-300">{contactInfo.responseTime}</span></div>
+              <div className="flex items-center gap-1.5 mb-1">
+                <MapPin className="w-3.5 h-3.5 text-green-400" />
+                <h3 className="text-xs font-semibold text-white uppercase tracking-wide">Location</h3>
               </div>
-              <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-700">
-                <div className="flex items-center gap-1 text-gray-300 text-[11px]"><Mail className="w-2.5 h-2.5 text-green-400" /><a href={`mailto:${contactInfo.email}`} className="hover:text-green-400 transition truncate max-w-[150px]">{contactInfo.email}</a></div>
+              
+              {/* Taller Map - increased height to 200px */}
+              <div className="w-full h-[300px] rounded-lg overflow-hidden">
+                <MapWrapper />
+              </div>
+              
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center justify-between text-[11px]">
+                  <div className="flex items-center gap-1.5 text-gray-400">
+                    <Clock className="w-3 h-3 text-green-400" />
+                    <span>Working Hours</span>
+                  </div>
+                  <span className="text-gray-300">{contactInfo.workingHours}</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <div className="flex items-center gap-1.5 text-gray-400">
+                    <Zap className="w-3 h-3 text-green-400" />
+                    <span>Response Time</span>
+                  </div>
+                  <span className="text-gray-300">{contactInfo.responseTime}</span>
+                </div>
+              </div>
+              
+              {/* Full Email Container - Visible Email */}
+              <div className="mt-3 pt-3 border-t border-gray-700">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2 text-gray-300 text-xs">
+                
+                    
+                  </div>
+                  <a 
+                    href={`mailto:${contactInfo.email}`} 
+                    className="text-green-400 hover:text-green-300 transition text-sm break-all bg-gray-800/50 p-2 rounded-lg text-center"
+                  >
+                    {contactInfo.email}
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -218,7 +260,6 @@ export default async function Home() {
           <a href="https://www.linkedin.com/in/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaLinkedin className="w-6 h-6" /></a>
           <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition"><FaEnvelope className="w-6 h-6" /></a>
         </div>
-        <p className="mb-2 text-gray-400">mashudh.ahmed@outlook.com</p>
         <p>© {new Date().getFullYear()} Mashudh Ahmed. {settings.footerText || fallbackSettings.footerText}</p>
         <BackToTopButton />
       </footer>
