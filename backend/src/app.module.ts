@@ -30,7 +30,8 @@ import { Message } from './contact/message.entity';
         url: config.get('DATABASE_URL'),
         entities: [Project, Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message],
         synchronize: config.get('NODE_ENV') !== 'production',
-        ssl: { rejectUnauthorized: false },
+        // ✅ Only enable SSL in production (Neon), disable for local PostgreSQL
+        ssl: config.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
       }),
     }),
     ProjectsModule,
