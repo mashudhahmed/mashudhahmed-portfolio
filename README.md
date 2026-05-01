@@ -1,4 +1,4 @@
-# 🖥️ Mashudh Ahmed – Terminal Portfolio
+# 🖥️ Mashudh Ahmed – Portfolio
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-10-red?logo=nestjs)](https://nestjs.com/)
@@ -139,4 +139,153 @@ npm run start:dev
 ```
 
 ### Frontend Setup
+```bash
+cd ../frontend
+
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.local.example .env.local
+
+# Update .env.local with your backend URL
+# NEXT_PUBLIC_API_URL=http://localhost:4000
+# NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+
+# Start development server
+npm run dev
+```
+
+### Admin Access
+Visit http://localhost:3000/admin/login
+```bash
+1. Enter the ADMIN_TOKEN from your backend/.env file
+2. Start managing your content
+```
+## 🚀 Deployment
+
+### Frontend (Vercel)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+cd frontend
+vercel --prod
+```
+### Set environment variables on Vercel:
+- `NEXT_PUBLIC_API_URL` = your backend URL (Render)
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` = your Cloudinary cloud name
+- `ADMIN_TOKEN` = your admin token
+### Backend (Render)
+```bash
+Push your backend code to GitHub
+```
+1. Create a new Web Service on Render
+- Connect your repository
+- Set Root Directory to backend
+
+#### Add environment variables:
+
+- `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
+- `ADMIN_TOKEN`
+- `NODE_ENV`=production
+- `Deploy`
+
+#### Database (Neon – Free)
+
+1. Create account at Neon
+- Create a new project
+- Copy the connection string
+- Add to Render environment variables (or use locally)
+
+
+### Backend (Render)
+1. Push your backend code to GitHub
+2. Create a new **Web Service** on [Render](https://render.com)
+3. Connect your repository
+4. Set **Root Directory** to `backend`
+5. Add environment variables:
+   - `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
+   - `ADMIN_TOKEN`
+   - `NODE_ENV=production`
+6. Deploy
+
+### Database (Neon – Free)
+1. Create account at [Neon](https://neon.tech)
+2. Create a new project
+3. Copy the connection string
+4. Add to Render environment variables (or use locally)
+
+---
+
+## 🔧 Available Scripts
+
+### Backend
+
+| Command | Description |
+|---|---|
+| `npm run start:dev` | Development server with hot reload |
+| `npm run build` | Production build |
+| `npm run start:prod` | Production server |
+
+### Frontend
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Production server |
+
+---
+
+## 📸 Screenshots
+
+| Hero Section | Terminal Modal | Admin Dashboard |
+|---|---|---|
+| ![Hero](https://via.placeholder.com/300x200?text=Hero) | ![Terminal](https://via.placeholder.com/300x200?text=Terminal) | ![Admin](https://via.placeholder.com/300x200?text=Admin) |
+
+---
+
+## 🤝 Contributing
+
+This is a personal portfolio project, but suggestions and feedback are welcome!
+Feel free to open an issue or submit a pull request.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** – see the [LICENSE](./LICENSE) file for details.
+
+
+
+## 📞 Contact
+
+**Mashudh Ahmed**
+
+| Platform  | Link |
+|---|---|
+| 📧 Email | [mashudh.ahmed@outlook.com](mailto:mashudh.ahmed@outlook.com) |
+| 🐙 GitHub | [@mashudhahmed](https://github.com/mashudhahmed) |
+| 💼 LinkedIn | [in/mashudhahmed](https://linkedin.com/in/mashudhahmed) |
+| 🌐 Portfolio | [mashudhahmed-portfolio.vercel.app](https://mashudhahmed.vercel.app) |
+
+## 🙏 Acknowledgments
+
+| Technology | Purpose |
+|---|---|
+| [Next.js](https://nextjs.org) | React framework |
+| [NestJS](https://nestjs.com) | Node.js framework |
+| [TailwindCSS](https://tailwindcss.com) | CSS framework |
+| [Framer Motion](https://www.framer.com/motion) | Animations |
+| [Lucide Icons](https://lucide.dev) | Icon library |
+| [Cloudinary](https://cloudinary.com) | Image hosting |
+| [Leaflet](https://leafletjs.com) | Interactive maps |
+| [Neon](https://neon.tech) | Cloud PostgreSQL |
+| [Vercel](https://vercel.com) | Frontend hosting |
+| [Render](https://render.com) | Backend hosting |
+
+
 
