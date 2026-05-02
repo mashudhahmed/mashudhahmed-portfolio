@@ -8,7 +8,9 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 <div align="center">
-  <img width="800" alt="portfolio" src="https://github.com/user-attachments/assets/fdb9f9e8-3481-4ad6-821e-40ee4bfa2ae2" />
+  
+  <img width="1200" alt="portfolio about me ss" src="https://github.com/user-attachments/assets/aa5cf034-debe-45bb-a85f-33530105461a" />
+
 
 </div>
 
@@ -71,180 +73,14 @@ A **full‑stack, terminal‑style portfolio** that combines a modern glassmorph
 
 ---
 
-## 📁 Project Structure
-```bash
-portfolio/
-├── backend/
-│ ├── src/
-│ │ ├── admin/ # Admin guard & verification
-│ │ ├── contact/ # Messages API (contact form)
-│ │ ├── contact-info/ # Contact details API
-│ │ ├── projects/ # Projects CRUD
-│ │ ├── skills/ # Skills CRUD
-│ │ ├── about/ # About section CRUD
-│ │ ├── social/ # Social links CRUD
-│ │ ├── settings/ # Site settings CRUD
-│ │ ├── visitor/ # Visitor counter
-│ │ └── stats/ # Dashboard statistics
-│ ├── .env.example
-│ └── package.json
-├── frontend/
-│ ├── app/
-│ │ ├── admin/ # Admin panel pages
-│ │ ├── components/ # Reusable React components
-│ │ └── page.tsx # Main portfolio page
-│ ├── lib/
-│ │ └── fallbackData.ts # Fallback data when API is down
-│ ├── public/ # Static assets (images, resume.pdf)
-│ ├── .env.local.example
-│ └── package.json
-└── README.md
-
-```
-
 
 ---
-
-## 📦 Installation & Setup
-
-### Prerequisites
-- Node.js 20+
-- PostgreSQL 15+ (or Neon account for cloud)
-- Cloudinary account (for image upload)
-- Git
-
-### Backend Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/mashudhahmed/mashudhahmed-portfolio.git
-cd mashudhahmed-portfolio/backend
-
-# Install dependencies
-npm install
-
-# Copy environment variables
-cp .env.example .env
-
-# Update .env with your database credentials
-# DB_HOST=localhost
-# DB_PORT=5432
-# DB_USERNAME=postgres
-# DB_PASSWORD=your_password
-# DB_DATABASE=portfolio
-# ADMIN_TOKEN=your-secure-token
-
-# Run database migrations (auto-creates tables)
-npm run start:dev
-```
-
-### Frontend Setup
-```bash
-cd ../frontend
-
-# Install dependencies
-npm install
-
-# Copy environment variables
-cp .env.local.example .env.local
-
-# Update .env.local with your backend URL
-# NEXT_PUBLIC_API_URL=http://localhost:4000
-# NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
-
-# Start development server
-npm run dev
-```
-
-### Admin Access
-Visit http://localhost:3000/admin/login
-```bash
-1. Enter the ADMIN_TOKEN from your backend/.env file
-2. Start managing your content
-```
-## 🚀 Deployment
-
-### Frontend (Vercel)
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-cd frontend
-vercel --prod
-```
-### Set environment variables on Vercel:
-- `NEXT_PUBLIC_API_URL` = your backend URL (Render)
-- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` = your Cloudinary cloud name
-- `ADMIN_TOKEN` = your admin token
-### Backend (Render)
-```bash
-Push your backend code to GitHub
-```
-1. Create a new Web Service on Render
-- Connect your repository
-- Set Root Directory to backend
-
-#### Add environment variables:
-
-- `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
-- `ADMIN_TOKEN`
-- `NODE_ENV`=production
-- `Deploy`
-
-#### Database (Neon – Free)
-
-1. Create account at Neon
-- Create a new project
-- Copy the connection string
-- Add to Render environment variables (or use locally)
-
-
-### Backend (Render)
-1. Push your backend code to GitHub
-2. Create a new **Web Service** on [Render](https://render.com)
-3. Connect your repository
-4. Set **Root Directory** to `backend`
-5. Add environment variables:
-   - `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
-   - `ADMIN_TOKEN`
-   - `NODE_ENV=production`
-6. Deploy
-
-### Database (Neon – Free)
-1. Create account at [Neon](https://neon.tech)
-2. Create a new project
-3. Copy the connection string
-4. Add to Render environment variables (or use locally)
-
----
-
-## 🔧 Available Scripts
-
-### Backend
-
-| Command | Description |
-|---|---|
-| `npm run start:dev` | Development server with hot reload |
-| `npm run build` | Production build |
-| `npm run start:prod` | Production server |
-
-### Frontend
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Development server |
-| `npm run build` | Production build |
-| `npm run start` | Production server |
-
----
-
 ## 📸 Screenshots
 
 | Hero Section | Terminal Modal | Admin Dashboard |
 |---|---|---|
-| ![Hero](https://via.placeholder.com/300x200?text=Hero) | ![Terminal](https://via.placeholder.com/300x200?text=Terminal) | ![Admin](https://via.placeholder.com/300x200?text=Admin) |
+| <img width="400" height="200" alt="portfolio" src="https://github.com/user-attachments/assets/b9677924-fd00-49eb-8e86-38b36fe1b0bd" /> | <img width="400" height="200" alt="terminal" src="https://github.com/user-attachments/assets/4ee6986e-59fe-4c13-ac4c-1ec1776ceac7" />| <img width="400" height="200" alt="dashboard" src="https://github.com/user-attachments/assets/bf5c8c23-4781-452a-8f24-b4122d0d58a7" />
+ |
 
 ---
 
