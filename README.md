@@ -79,8 +79,7 @@ A **full‑stack, terminal‑style portfolio** that combines a modern glassmorph
 
 | Hero Section | Terminal Modal | Admin Dashboard |
 |---|---|---|
-| <img width="400" height="200" alt="portfolio" src="https://github.com/user-attachments/assets/b9677924-fd00-49eb-8e86-38b36fe1b0bd" /> | <img width="400" height="200" alt="terminal" src="https://github.com/user-attachments/assets/4ee6986e-59fe-4c13-ac4c-1ec1776ceac7" />| <img width="400" height="200" alt="dashboard" src="https://github.com/user-attachments/assets/bf5c8c23-4781-452a-8f24-b4122d0d58a7" />
- |
+| <img width="400" height="200" alt="portfolio" src="https://github.com/user-attachments/assets/b9677924-fd00-49eb-8e86-38b36fe1b0bd" /> | <img width="400" height="200" alt="terminal" src="https://github.com/user-attachments/assets/4ee6986e-59fe-4c13-ac4c-1ec1776ceac7" />| <img width="400" height="200" alt="dashboard" src="https://github.com/user-attachments/assets/bf5c8c23-4781-452a-8f24-b4122d0d58a7" /> |
 
 ---
 
