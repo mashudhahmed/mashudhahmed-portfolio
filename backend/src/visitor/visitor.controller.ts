@@ -13,7 +13,7 @@ export class VisitorController {
 
   @Get()
   async getCount() {
-    const record = await this.visitorService['visitorRepo'].findOne({ where: { id: 1 } });
-    return { count: record?.count || 0 };
+    const count = await this.visitorService.getCount();
+    return { count };
   }
 }

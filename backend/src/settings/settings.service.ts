@@ -25,9 +25,8 @@ export class SettingsService implements OnModuleInit {
         result[setting.key] = setting.value;
       }
     }
-    // Ensure all required keys exist with defaults
+    // Only return what's needed for the portfolio
     return {
-      siteTitle: result.siteTitle || 'Mashudh Ahmed | Terminal Portfolio',
       typewriterPhrases: result.typewriterPhrases || ['Full‑Stack Developer', 'Problem Solver', 'Tech Enthusiast', 'Creative Technologist'],
       footerText: result.footerText || 'Built with Next.js & NestJS',
     };
@@ -56,7 +55,6 @@ export class SettingsService implements OnModuleInit {
 
   async initializeDefaultSettings() {
     const defaults = {
-      siteTitle: 'Mashudh Ahmed | Terminal Portfolio',
       typewriterPhrases: ['Full‑Stack Developer', 'Problem Solver', 'Tech Enthusiast', 'Creative Technologist'],
       footerText: 'Built with Next.js & NestJS',
     };

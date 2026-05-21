@@ -9,18 +9,33 @@ import FloatingIcons from '@/components/FloatingIcons';
 import Navbar from '@/components/Navbar';
 import ScrollReveal from '@/components/ScrollReveal';
 import GitHubRepoCount from '@/components/GitHubRepoCount';
+import GitHubStreak from '@/components/GitHubStreak';
 import PortfolioContent from '@/components/PortfolioContent';
 import CountUp from '@/components/CountUp';
 import MapWrapper from '@/components/MapWrapper';
 import { Download, Calendar, GraduationCap, Award, Mail, MapPin, Clock, Zap } from 'lucide-react';
-import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaEnvelope, FaTwitter, FaInstagram, FaYoutube, FaDiscord, FaDev, FaMedium } from 'react-icons/fa';
 import {
   fallbackProjects,
   fallbackAbout,
   fallbackContact,
   fallbackSettings,
+  fallbackSocialLinks,
   fetchWithFallback,
 } from '@/lib/fallbackData';
+
+// Icon mapping for social platforms
+const socialIcons: Record<string, any> = {
+  github: FaGithub,
+  linkedin: FaLinkedin,
+  email: FaEnvelope,
+  twitter: FaTwitter,
+  instagram: FaInstagram,
+  youtube: FaYoutube,
+  discord: FaDiscord,
+  devto: FaDev,
+  medium: FaMedium,
+};
 
 async function getProjects() {
   return fetchWithFallback(
@@ -64,17 +79,43 @@ async function getVisitorCount() {
   }
 }
 
+async function getResume() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume`, { cache: 'no-store' });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (error) {
+    console.error('Failed to fetch resume:', error);
+  }
+  return { url: '/resume.pdf', fileName: 'Mashudh_Ahmed_Resume.pdf' };
+}
+
+// ✅ NEW: Fetch social links from backend
+async function getSocialLinks() {
+  return fetchWithFallback(
+    `${process.env.NEXT_PUBLIC_API_URL}/social-links`,
+    fallbackSocialLinks,
+    { cache: 'no-store' }
+  );
+}
+
 export default async function Home() {
-  const [projects, about, contactInfo, settings, visitorData] = await Promise.all([
+  const [projects, about, contactInfo, settings, visitorData, resume, socialLinks] = await Promise.all([
     getProjects(),
     getAbout(),
     getContactInfo(),
     getSettings(),
     getVisitorCount(),
+    getResume(),
+    getSocialLinks(), // ✅ Added social links
   ]);
 
   const projectCount = projects.length;
   const typewriterPhrases = settings.typewriterPhrases || fallbackSettings.typewriterPhrases;
+  
+  // Filter only active social links
+  const activeSocialLinks = socialLinks.filter((link: any) => link.isActive);
 
   return (
     <main className="relative min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-gray-200">
@@ -102,7 +143,11 @@ export default async function Home() {
             <a href="#contact" className="px-8 py-3 rounded-full border-2 border-green-500 text-green-400 font-semibold hover:bg-green-500/10 hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-950">
               Contact Me
             </a>
-            <a href="/resume.pdf" download className="px-8 py-3 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold shadow-lg hover:shadow-orange-500/25 hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 inline-flex items-center gap-2">
+            <a 
+              href={resume.url} 
+              download 
+              className="px-8 py-3 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold shadow-lg hover:shadow-orange-500/25 hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 inline-flex items-center gap-2"
+            >
               <Download className="w-5 h-5" />
               Resume
             </a>
@@ -114,17 +159,12 @@ export default async function Home() {
       <ScrollReveal>
         <section id="about" className="relative z-10 py-24 px-4 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* LEFT COLUMN - Profile Image with Badge Inside */}
             <ScrollReveal direction="left" delay={0.1}>
               <div className="space-y-8 relative">
                 <div className="absolute -left-8 top-1/4 w-32 h-32 rounded-full bg-green-500/20 blur-2xl -z-10" />
-                
-                {/* Profile Image Container - Badge inside bottom right */}
                 <div className="relative w-80 h-80 mx-auto rounded-2xl overflow-hidden border-4 border-green-500/50 shadow-2xl group">
                   <img src={about.photoUrl} alt="Mashudh Ahmed" className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Availability Badge - Inside image, bottom right corner */}
                   <div className="absolute bottom-3 right-3 z-10">
                     <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium border backdrop-blur-sm ${
                       contactInfo.availableForWork 
@@ -136,13 +176,11 @@ export default async function Home() {
                     </div>
                   </div>
                 </div>
-
-                {/* Stats Card */}
                 <div className="glass-card p-6 text-center relative">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div><div className="text-3xl font-bold text-green-400"><CountUp end={3} suffix="+" /></div><div className="text-xs text-gray-400">Years Coding</div></div>
                     <div><div className="text-3xl font-bold text-green-400"><CountUp end={projectCount} suffix="+" /></div><div className="text-xs text-gray-400">Projects</div></div>
-                    <div><div className="text-3xl font-bold text-green-400"><CountUp end={520} suffix="+" /></div><div className="text-xs text-gray-400">GitHub Commits</div></div>
+                    <div><div className="text-3xl font-bold text-green-400"><GitHubStreak username="mashudhahmed" fallback={7} /></div><div className="text-xs text-gray-400">Longest Streak</div></div>
                     <div><div className="text-3xl font-bold text-green-400"><GitHubRepoCount username="mashudhahmed" fallback={24} /></div><div className="text-xs text-gray-400">GitHub Repos</div></div>
                   </div>
                   <div className="mt-4 pt-4 border-t border-white/10">
@@ -151,8 +189,6 @@ export default async function Home() {
                 </div>
               </div>
             </ScrollReveal>
-
-            {/* RIGHT COLUMN - About Text + Education */}
             <ScrollReveal direction="right" delay={0.2}>
               <div className="space-y-8">
                 <div>
@@ -189,7 +225,7 @@ export default async function Home() {
       {/* Skills + Projects */}
       <PortfolioContent projects={projects} />
 
-      {/* Contact Section - Taller Map + Full Email Container */}
+      {/* Contact Section */}
       <ScrollReveal>
         <section id="contact" className="relative z-10 py-8 px-4 max-w-5xl mx-auto">
           <div className="text-center mb-4">
@@ -198,23 +234,17 @@ export default async function Home() {
             <p className="text-gray-400 text-xs max-w-xl mx-auto mt-1.5">Have a project? Let's connect.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 items-stretch">
-            {/* Contact Form */}
             <div className="h-full">
               <ContactForm />
             </div>
-            
-            {/* Right Card - Taller Map + Full Email Container */}
             <div className="glass-card p-3 flex flex-col h-full">
               <div className="flex items-center gap-1.5 mb-1">
                 <MapPin className="w-3.5 h-3.5 text-green-400" />
                 <h3 className="text-xs font-semibold text-white uppercase tracking-wide">Location</h3>
               </div>
-              
-              {/* Taller Map - increased height to 200px */}
               <div className="w-full h-[300px] rounded-lg overflow-hidden">
                 <MapWrapper />
               </div>
-              
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between text-[11px]">
                   <div className="flex items-center gap-1.5 text-gray-400">
@@ -231,21 +261,13 @@ export default async function Home() {
                   <span className="text-gray-300">{contactInfo.responseTime}</span>
                 </div>
               </div>
-              
-              {/* Full Email Container - Visible Email */}
               <div className="mt-3 pt-3 border-t border-gray-700">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 text-gray-300 text-xs">
-                
-                    
-                  </div>
-                  <a 
-                    href={`mailto:${contactInfo.email}`} 
-                    className="text-green-400 hover:text-green-300 transition text-sm break-all bg-gray-800/50 p-2 rounded-lg text-center"
-                  >
-                    {contactInfo.email}
-                  </a>
-                </div>
+                <a 
+                  href={`mailto:${contactInfo.email}`} 
+                  className="text-green-400 hover:text-green-300 transition text-sm break-all bg-gray-800/50 p-2 rounded-lg text-center"
+                >
+                  {contactInfo.email}
+                </a>
               </div>
             </div>
           </div>
@@ -254,11 +276,34 @@ export default async function Home() {
 
       <TerminalButton />
 
+      {/* ✅ DYNAMIC FOOTER - Social links from admin panel */}
       <footer className="relative z-10 border-t border-gray-800 py-10 text-center text-gray-500 text-sm">
-        <div className="flex justify-center gap-6 mb-4">
-          <a href="https://github.com/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaGithub className="w-6 h-6" /></a>
-          <a href="https://www.linkedin.com/in/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaLinkedin className="w-6 h-6" /></a>
-          <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition"><FaEnvelope className="w-6 h-6" /></a>
+        <div className="flex justify-center gap-6 mb-4 flex-wrap">
+          {activeSocialLinks.length > 0 ? (
+            activeSocialLinks.map((link: any) => {
+              const IconComponent = socialIcons[link.platform?.toLowerCase()];
+              if (!IconComponent) return null;
+              return (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-green-400 transition transform hover:scale-110 duration-200"
+                  aria-label={link.platform}
+                >
+                  <IconComponent className="w-6 h-6" />
+                </a>
+              );
+            })
+          ) : (
+            // Fallback hardcoded links if none in database
+            <>
+              <a href="https://github.com/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaGithub className="w-6 h-6" /></a>
+              <a href="https://www.linkedin.com/in/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaLinkedin className="w-6 h-6" /></a>
+              <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition"><FaEnvelope className="w-6 h-6" /></a>
+            </>
+          )}
         </div>
         <p>© {new Date().getFullYear()} Mashudh Ahmed. {settings.footerText || fallbackSettings.footerText}</p>
         <BackToTopButton />

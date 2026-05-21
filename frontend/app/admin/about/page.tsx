@@ -102,6 +102,18 @@ export default function AdminAbout() {
           <h1 className="text-3xl font-bold text-white">About Section</h1>
           <p className="text-gray-400 mt-1">Manage your about page content</p>
         </div>
+        {saveStatus === 'success' && (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/20 text-green-400 text-sm">
+            <CheckCircle className="w-3 h-3" />
+            Saved successfully
+          </div>
+        )}
+        {saveStatus === 'error' && (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/20 text-red-400 text-sm">
+            <AlertCircle className="w-3 h-3" />
+            Error saving
+          </div>
+        )}
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -110,79 +122,112 @@ export default function AdminAbout() {
           <form onSubmit={handleSubmit} className="glass-card p-6 space-y-6">
             <h2 className="text-xl font-semibold text-white mb-4">Edit Content</h2>
 
-            {/* Profile Photo - with direct upload */}
+            {/* Profile Photo */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">Profile Photo</label>
               <ImageUpload
                 onUpload={(url) => setAbout({ ...about, photoUrl: url })}
                 currentImage={about.photoUrl}
                 folder="profile"
+                accept="image/*"
+                label="Upload Photo"
               />
             </div>
 
             {/* Bio */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Bio (one sentence per line)</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Bio</label>
               <textarea
                 value={about.bio}
                 onChange={(e) => setAbout({ ...about, bio: e.target.value })}
                 rows={5}
                 className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Write your bio here..."
               />
+              <p className="text-gray-500 text-xs mt-1">Write a compelling introduction about yourself</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Education Fields */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-2">
+                <GraduationCap className="w-5 h-5 text-green-400" />
+                <label className="text-md font-semibold text-white">Education Details</label>
+              </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Degree</label>
                 <input
                   type="text"
                   value={about.education}
                   onChange={(e) => setAbout({ ...about, education: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white"
+                  className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Bachelor of Science in Computer Science"
                 />
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">University</label>
                 <input
                   type="text"
                   value={about.university}
                   onChange={(e) => setAbout({ ...about, university: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white"
+                  className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="University Name"
                 />
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Major</label>
                 <input
                   type="text"
                   value={about.major}
                   onChange={(e) => setAbout({ ...about, major: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white"
+                  className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Software Engineering"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Years</label>
-                <input
-                  type="text"
-                  value={`${about.yearStart} – ${about.yearEnd}`}
-                  onChange={(e) => {
-                    const [start, end] = e.target.value.split(' – ');
-                    setAbout({ ...about, yearStart: start || '', yearEnd: end || '' });
-                  }}
-                  className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white"
-                  placeholder="2022 – 2026"
-                />
+              
+              {/* ✅ FIXED: Separate Year Start and Year End fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Start Year</label>
+                  <input
+                    type="text"
+                    value={about.yearStart}
+                    onChange={(e) => setAbout({ ...about, yearStart: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="2022"
+                    maxLength={4}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">End Year</label>
+                  <input
+                    type="text"
+                    value={about.yearEnd}
+                    onChange={(e) => setAbout({ ...about, yearEnd: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="2026"
+                    maxLength={4}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Coursework */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Relevant Coursework</label>
+              <div className="flex items-center gap-2 mb-2">
+                <Award className="w-5 h-5 text-green-400" />
+                <label className="text-md font-semibold text-white">Relevant Coursework</label>
+              </div>
               <textarea
                 value={about.coursework}
                 onChange={(e) => setAbout({ ...about, coursework: e.target.value })}
                 rows={3}
-                className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white"
+                className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Data Structures, Algorithms, Web Development, Database Systems..."
               />
+              <p className="text-gray-500 text-xs mt-1">Separate courses with commas</p>
             </div>
 
             <button
@@ -194,16 +239,6 @@ export default function AdminAbout() {
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
                   Saving...
-                </>
-              ) : saveStatus === 'success' ? (
-                <>
-                  <CheckCircle className="w-4 h-4" />
-                  Saved!
-                </>
-              ) : saveStatus === 'error' ? (
-                <>
-                  <AlertCircle className="w-4 h-4" />
-                  Error! Try again
                 </>
               ) : (
                 <>
@@ -218,45 +253,53 @@ export default function AdminAbout() {
         {/* Live Preview */}
         <div>
           <h2 className="text-xl font-semibold text-white mb-4">Live Preview</h2>
-          <div className="glass-card p-6">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-700 flex-shrink-0">
+          <div className="glass-card p-6 space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-700 flex-shrink-0">
                 {about.photoUrl ? (
                   <img src={about.photoUrl} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">📷</div>
+                  <div className="w-full h-full flex items-center justify-center text-gray-500 text-2xl">
+                    📷
+                  </div>
                 )}
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">Mashudh Ahmed</h3>
+                <h3 className="text-xl font-bold text-white">Preview</h3>
+                <p className="text-gray-400 text-sm">How your about section appears</p>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-lg font-semibold text-white mb-2">About Me</h4>
-                <div className="text-gray-300 text-sm whitespace-pre-line">{about.bio || 'Your bio will appear here...'}</div>
+            <div>
+              <h4 className="text-lg font-semibold text-white mb-2">About Me</h4>
+              <div className="text-gray-300 text-sm whitespace-pre-line">
+                {about.bio || 'Your bio will appear here...'}
               </div>
+            </div>
 
-              <div className="border-t border-gray-800 pt-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <GraduationCap className="w-5 h-5 text-green-400" />
-                  <h4 className="text-md font-semibold text-white">Education</h4>
-                </div>
-                <div className="space-y-1 pl-7">
-                  <p className="text-white font-medium">{about.education || '—'}</p>
-                  <p className="text-gray-400 text-sm">{about.university || '—'}</p>
-                  <p className="text-gray-500 text-xs">Major: {about.major || '—'} | {about.yearStart && about.yearEnd ? `${about.yearStart} – ${about.yearEnd}` : '—'}</p>
-                </div>
+            <div className="border-t border-gray-800 pt-4">
+              <div className="flex items-center gap-2 mb-3">
+                <GraduationCap className="w-5 h-5 text-green-400" />
+                <h4 className="text-md font-semibold text-white">Education</h4>
               </div>
+              <div className="space-y-1 pl-7">
+                <p className="text-white font-medium">{about.education || '—'}</p>
+                <p className="text-gray-400 text-sm">{about.university || '—'}</p>
+                <p className="text-gray-500 text-sm">
+                  Major: {about.major || '—'} 
+                  {(about.yearStart || about.yearEnd) && (
+                    <> | {about.yearStart && about.yearStart}{about.yearStart && about.yearEnd && ' – '}{about.yearEnd && about.yearEnd}</>
+                  )}
+                </p>
+              </div>
+            </div>
 
-              <div className="border-t border-gray-800 pt-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Award className="w-5 h-5 text-green-400" />
-                  <h4 className="text-md font-semibold text-white">Relevant Coursework</h4>
-                </div>
-                <p className="text-gray-400 text-sm pl-7">{about.coursework || '—'}</p>
+            <div className="border-t border-gray-800 pt-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Award className="w-5 h-5 text-green-400" />
+                <h4 className="text-md font-semibold text-white">Relevant Coursework</h4>
               </div>
+              <p className="text-gray-400 text-sm pl-7">{about.coursework || '—'}</p>
             </div>
           </div>
         </div>

@@ -1,22 +1,33 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import helmet from 'helmet';
+import { Logger } from '@nestjs/common';
+
+// Use require for compression
+const compression = require('compression');
+
+const logger = new Logger('Bootstrap');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // CORS configuration – allows your frontend(s) to connect
+  // Security & Performance middleware
+  app.use(helmet());
+  app.use(compression());
+
+  // CORS configuration
+  const corsOrigins = process.env.CORS_ORIGINS 
+    ? process.env.CORS_ORIGINS.split(',')
+    : ['http://localhost:3000', 'https://mashudhahmed.vercel.app'];
+  
   app.enableCors({
-    origin: [
-      'http://localhost:3000',           // Local Next.js development
-      'https://mashudhahmed.vercel.app', // Your live frontend (from the URL you shared)
-      // Add your custom domain here if you have one
-    ],
+    origin: corsOrigins,
     credentials: true,
   });
 
-  // Use PORT from environment (Render sets this) or default to 4000 for local development
   const port = process.env.PORT || 4000;
   await app.listen(port);
-  console.log(`✅ Backend running on port ${port}`);
+  logger.log(`✅ Backend running on port ${port}`);
+  logger.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
 }
 bootstrap();

@@ -4,14 +4,12 @@ import { useRouter } from 'next/navigation';
 import { Save, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface Settings {
-  siteTitle: string;
   typewriterPhrases: string[];
   footerText: string;
 }
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState<Settings>({
-    siteTitle: 'Mashudh Ahmed | Terminal Portfolio',
     typewriterPhrases: ['Full‑Stack Developer', 'Problem Solver', 'Tech Enthusiast', 'Creative Technologist'],
     footerText: 'Built with Next.js & NestJS',
   });
@@ -34,12 +32,11 @@ export default function AdminSettings() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings`, {
         headers: { Authorization: `Bearer ${token}` },
-        cache: 'no-store',  // ← ADD THIS
+        cache: 'no-store',
       });
       if (res.ok) {
         const data = await res.json();
         setSettings({
-          siteTitle: data.siteTitle || 'Mashudh Ahmed | Terminal Portfolio',
           typewriterPhrases: data.typewriterPhrases || ['Full‑Stack Developer', 'Problem Solver', 'Tech Enthusiast', 'Creative Technologist'],
           footerText: data.footerText || 'Built with Next.js & NestJS',
         });
@@ -61,7 +58,6 @@ export default function AdminSettings() {
     const updatedPhrases = phrasesInput.split('\n').filter(p => p.trim());
 
     const payload = {
-      siteTitle: settings.siteTitle,
       typewriterPhrases: updatedPhrases,
       footerText: settings.footerText,
     };
@@ -80,8 +76,6 @@ export default function AdminSettings() {
         setSettings({ ...settings, typewriterPhrases: updatedPhrases });
         setSaveStatus('success');
         setTimeout(() => setSaveStatus('idle'), 2000);
-        // Refresh to show updated settings
-        setTimeout(() => window.location.reload(), 1500);
       } else {
         setSaveStatus('error');
         setTimeout(() => setSaveStatus('idle'), 2000);
@@ -128,17 +122,7 @@ export default function AdminSettings() {
         <form onSubmit={handleSubmit} className="glass-card p-6 space-y-6">
           <h2 className="text-xl font-semibold text-white">General Settings</h2>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Site Title</label>
-            <input
-              type="text"
-              value={settings.siteTitle}
-              onChange={(e) => setSettings({ ...settings, siteTitle: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <p className="text-gray-500 text-xs mt-1">Appears in browser tab title</p>
-          </div>
-
+          {/* Typewriter Phrases */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Typewriter Phrases (one per line)</label>
             <textarea
@@ -151,6 +135,7 @@ export default function AdminSettings() {
             <p className="text-gray-500 text-xs mt-1">Each line will appear as a rotating phrase in the hero section</p>
           </div>
 
+          {/* Footer Text */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Footer Text</label>
             <input
@@ -158,6 +143,7 @@ export default function AdminSettings() {
               value={settings.footerText}
               onChange={(e) => setSettings({ ...settings, footerText: e.target.value })}
               className="w-full px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="Built with Next.js & NestJS"
             />
             <p className="text-gray-500 text-xs mt-1">Appears after the copyright symbol in footer</p>
           </div>
@@ -181,38 +167,47 @@ export default function AdminSettings() {
           </button>
         </form>
 
-        <div className="glass-card p-6 space-y-6">
-          <h2 className="text-xl font-semibold text-white">Information</h2>
-          
-          <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
-            <h3 className="text-white text-sm font-medium mb-2">What these settings do</h3>
-            <ul className="text-gray-400 text-xs space-y-2 list-disc list-inside">
-              <li><strong>Site Title:</strong> Shown in browser tab and search results</li>
-              <li><strong>Typewriter Phrases:</strong> Rotating text in hero section (one per line)</li>
-              <li><strong>Footer Text:</strong> Text after copyright in footer</li>
-            </ul>
-          </div>
-
-          <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
-            <h3 className="text-white text-sm font-medium mb-2">Live Preview</h3>
-            <div className="space-y-2">
-              <p className="text-gray-300 text-sm">Browser title: <span className="text-green-400">{settings.siteTitle}</span></p>
-              <div>
-                <p className="text-gray-300 text-sm mb-1">Hero typewriter will show:</p>
+        <div className="space-y-6">
+          {/* Live Preview Card */}
+          <div className="glass-card p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">Live Preview</h2>
+            <div className="space-y-4">
+              <div className="p-4 rounded-lg bg-gray-800/50">
+                <p className="text-gray-400 text-sm mb-2">Hero Typewriter Shows:</p>
                 <div className="flex flex-wrap gap-2">
-                  {phrasesInput.split('\n').filter(p => p.trim()).slice(0, 3).map((phrase, i) => (
-                    <span key={i} className="text-xs px-2 py-1 rounded-full bg-gray-800 text-green-400">
+                  {phrasesInput.split('\n').filter(p => p.trim()).slice(0, 4).map((phrase, i) => (
+                    <span key={i} className="text-xs px-2 py-1 rounded-full bg-gray-700 text-green-400">
                       {phrase || '—'}
                     </span>
                   ))}
-                  {phrasesInput.split('\n').filter(p => p.trim()).length > 3 && (
-                    <span className="text-xs px-2 py-1 rounded-full bg-gray-800 text-gray-400">
-                      +{phrasesInput.split('\n').filter(p => p.trim()).length - 3} more
-                    </span>
-                  )}
                 </div>
               </div>
-              <p className="text-gray-300 text-sm">Footer: <span className="text-green-400">© 2025 Mashudh Ahmed. {settings.footerText}</span></p>
+              
+              <div className="p-4 rounded-lg bg-gray-800/50">
+                <p className="text-gray-400 text-sm mb-2">Footer Preview:</p>
+                <p className="text-gray-300 text-sm">
+                  © 2025 Mashudh Ahmed. {settings.footerText}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Info Card */}
+          <div className="glass-card p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">Information</h2>
+            <div className="space-y-3">
+              <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
+                <h3 className="text-blue-400 text-sm font-medium mb-2">📌 What these settings do</h3>
+                <ul className="text-gray-400 text-xs space-y-2 list-disc list-inside">
+                  <li><strong>Typewriter Phrases:</strong> Rotating text in hero section (one per line)</li>
+                  <li><strong>Footer Text:</strong> Text after copyright in footer</li>
+                </ul>
+              </div>
+              <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+                <p className="text-green-400 text-xs">
+                  💡 Changes appear immediately after saving.
+                </p>
+              </div>
             </div>
           </div>
         </div>

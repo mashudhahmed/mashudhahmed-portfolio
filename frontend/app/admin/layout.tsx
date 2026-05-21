@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   Shield,
+  FileText,  // ✅ Add this import
 } from 'lucide-react';
 
 const navItems = [
@@ -23,6 +24,7 @@ const navItems = [
   { name: 'Contact Info', href: '/admin/contact', icon: Mail },
   { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
   { name: 'Social Links', href: '/admin/social', icon: Share2 },
+  { name: 'Resume', href: '/admin/resume', icon: FileText },  // ✅ Add this line
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
