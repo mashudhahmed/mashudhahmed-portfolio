@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: portfolio-backend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=512"  # Limit memory
+    plan: starter  # Upgrade from free tier if needed
+    numInstances: 1
+    healthCheckPath: /health
+    autoDeploy: true
