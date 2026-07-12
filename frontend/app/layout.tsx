@@ -11,7 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Mashudh Ahmed | Portfolio',
   description: 'Full-stack developer portfolio with terminal UI',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mashudhahmed.vercel.app'), // ✅ Fix here
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mashudhahmed.vercel.app'),
   keywords: 'full-stack developer, portfolio, next.js, typescript, nestjs',
   openGraph: {
     title: 'Mashudh Ahmed | Portfolio',

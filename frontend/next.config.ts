@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
-    qualities: [75, 85], // ✅ ADD THIS - fixes the quality warning
+    qualities: [75, 85],
     remotePatterns: [
       {
         protocol: 'https',
@@ -27,19 +27,19 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   
-  // ✅ CORRECT: cacheComponents at root level
-  cacheComponents: true,
+  // ✅ Disable static generation for dynamic routes
+  staticPageGenerationTimeout: 0,
   
-  // ✅ CORRECT: Move optimizeCss and scrollRestoration here
+  // ✅ Temporarily disable cacheComponents for build
+  // cacheComponents: true, // Commented out for Vercel build
+  
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
   },
   
-  // ✅ CORRECT: Empty turbopack config to silence warnings
   turbopack: {},
   
-  // ✅ Conditionally apply headers only in production
   async headers() {
     if (process.env.NODE_ENV === 'production') {
       return [

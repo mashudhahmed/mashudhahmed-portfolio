@@ -1,3 +1,7 @@
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
+
 import { Suspense } from 'react';
 import Image from 'next/image';
 import TerminalButton from '@/components/TerminalButton';
@@ -21,7 +25,6 @@ import {
   fallbackContact,
   fallbackSettings,
   fallbackSocialLinks,
-  fetchWithFallback,
 } from '@/lib/fallbackData';
 
 // ✅ Industry standard blur placeholder for hero image
@@ -40,42 +43,68 @@ const socialIcons: Record<string, any> = {
   medium: FaMedium,
 };
 
-// Data fetching functions (moved outside component)
+// ✅ Improved fetch functions with better error handling for Vercel
 async function getProjects() {
-  return fetchWithFallback(
-    `${process.env.NEXT_PUBLIC_API_URL}/projects`,
-    fallbackProjects,
-    { cache: 'no-store' }
-  );
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, { 
+      cache: 'no-store'
+    });
+    if (!res.ok) return fallbackProjects;
+    const data = await res.json();
+    return data.length > 0 ? data : fallbackProjects;
+  } catch (error) {
+    console.error('Failed to fetch projects:', error);
+    return fallbackProjects;
+  }
 }
 
 async function getAbout() {
-  return fetchWithFallback(
-    `${process.env.NEXT_PUBLIC_API_URL}/about`,
-    fallbackAbout,
-    { cache: 'no-store' }
-  );
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/about`, { 
+      cache: 'no-store'
+    });
+    if (!res.ok) return fallbackAbout;
+    const data = await res.json();
+    return data || fallbackAbout;
+  } catch (error) {
+    console.error('Failed to fetch about:', error);
+    return fallbackAbout;
+  }
 }
 
 async function getContactInfo() {
-  return fetchWithFallback(
-    `${process.env.NEXT_PUBLIC_API_URL}/contact-info`,
-    fallbackContact,
-    { cache: 'no-store' }
-  );
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact-info`, { 
+      cache: 'no-store'
+    });
+    if (!res.ok) return fallbackContact;
+    const data = await res.json();
+    return data || fallbackContact;
+  } catch (error) {
+    console.error('Failed to fetch contact info:', error);
+    return fallbackContact;
+  }
 }
 
 async function getSettings() {
-  return fetchWithFallback(
-    `${process.env.NEXT_PUBLIC_API_URL}/settings`,
-    fallbackSettings,
-    { cache: 'no-store' }
-  );
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings`, { 
+      cache: 'no-store'
+    });
+    if (!res.ok) return fallbackSettings;
+    const data = await res.json();
+    return data || fallbackSettings;
+  } catch (error) {
+    console.error('Failed to fetch settings:', error);
+    return fallbackSettings;
+  }
 }
 
 async function getVisitorCount() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visitor`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visitor`, { 
+      cache: 'no-store'
+    });
     if (!res.ok) return { count: 0 };
     return res.json();
   } catch {
@@ -85,7 +114,9 @@ async function getVisitorCount() {
 
 async function getResume() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume`, { 
+      cache: 'no-store'
+    });
     if (res.ok) {
       return await res.json();
     }
@@ -96,14 +127,33 @@ async function getResume() {
 }
 
 async function getSocialLinks() {
-  return fetchWithFallback(
-    `${process.env.NEXT_PUBLIC_API_URL}/social-links`,
-    fallbackSocialLinks,
-    { cache: 'no-store' }
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/social-links`, { 
+      cache: 'no-store'
+    });
+    if (!res.ok) return fallbackSocialLinks;
+    const data = await res.json();
+    return data.length > 0 ? data : fallbackSocialLinks;
+  } catch (error) {
+    console.error('Failed to fetch social links:', error);
+    return fallbackSocialLinks;
+  }
+}
+
+// ✅ Main page component with Suspense boundary
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-green-400 text-xl animate-pulse">Loading portfolio...</div>
+      </div>
+    }>
+      <PageContent />
+    </Suspense>
   );
 }
 
-// ✅ NEW: Data loading component with Suspense
+// ✅ PageContent component with all data fetching
 async function PageContent() {
   const [projects, about, contactInfo, settings, visitorData, resume, socialLinks] = await Promise.all([
     getProjects(),
@@ -166,7 +216,6 @@ async function PageContent() {
                 <div className="absolute -left-8 top-1/4 w-32 h-32 rounded-full bg-green-500/20 blur-2xl -z-10" />
                 
                 <div className="relative w-80 h-80 mx-auto rounded-2xl overflow-hidden border-4 border-green-500/50 shadow-2xl group">
-                  {/* ✅ Fixed: Suppress hydration warning for images */}
                   <Image
                     src={about.photoUrl}
                     alt="Mashudh Ahmed"
@@ -177,7 +226,7 @@ async function PageContent() {
                     quality={85}
                     placeholder="blur"
                     blurDataURL={BLUR_DATA_URL}
-                    suppressHydrationWarning // ✅ Fixes hydration mismatch
+                    suppressHydrationWarning
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-3 right-3 z-10">
@@ -322,18 +371,5 @@ async function PageContent() {
         <BackToTopButton />
       </footer>
     </main>
-  );
-}
-
-// ✅ Main page component with Suspense boundary
-export default function Home() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="text-green-400 text-xl animate-pulse">Loading portfolio...</div>
-      </div>
-    }>
-      <PageContent />
-    </Suspense>
   );
 }
