@@ -27,11 +27,11 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   
-  // ✅ Disable static generation for dynamic routes
-  staticPageGenerationTimeout: 0,
+  // ✅ Remove staticPageGenerationTimeout
+  // staticPageGenerationTimeout: 0, // REMOVE THIS
   
-  // ✅ Temporarily disable cacheComponents for build
-  // cacheComponents: true, // Commented out for Vercel build
+  // ✅ Keep cacheComponents disabled for build
+  // cacheComponents: true, // Keep commented out
   
   experimental: {
     optimizeCss: true,
