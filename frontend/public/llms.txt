@@ -1,0 +1,70 @@
+# Mashudh Ahmed - Full-Stack Developer Portfolio
+
+> Full-stack developer portfolio with a terminal-inspired UI, built with Next.js 16, NestJS, and PostgreSQL.
+
+## About Me
+
+I'm a passionate Computer Science and Engineering student majoring in Software Engineering. I build high-performance web applications with modern technologies and love solving complex problems with clean, elegant code.
+
+- **Name**: Mashudh Ahmed
+- **Title**: Full-Stack Developer
+- **Location**: Dhaka, Bangladesh
+- **Email**: mashudh.ahmed@outlook.com
+- **GitHub**: https://github.com/mashudhahmed
+- **LinkedIn**: https://linkedin.com/in/mashudhahmed
+
+## Core Pages
+
+- [Home](https://mashudhahmed.vercel.app): Portfolio landing page with typewriter effect and hero section.
+- [About](https://mashudhahmed.vercel.app/#about): Information about Mashudh's background, education, and skills.
+- [Projects](https://mashudhahmed.vercel.app/#projects): Overview of full-stack projects with technologies used.
+- [Skills](https://mashudhahmed.vercel.app/#skills): Technical skills categorized by frontend, backend, and database technologies.
+- [Contact](https://mashudhahmed.vercel.app/#contact): Contact form to send a direct message.
+
+## Featured Projects
+
+### SnapCart – E-Commerce App
+Full-stack e-commerce backend with NestJS featuring JWT authentication, role-based access control, product management, cart system, and order handling.
+
+- **Technologies**: TypeScript, NestJS, PostgreSQL, JWT, REST API
+- **GitHub**: https://github.com/mashudhahmed/ecommerce-fullstack
+
+### BloodLink – Blood Donation App
+Android mobile app in Kotlin connecting blood donors with recipients, featuring user registration and donor search functionality.
+
+- **Technologies**: Kotlin, XML, Firebase, NestJS
+- **GitHub**: https://github.com/mashudhahmed/blood-donation-mobile-app
+
+### QuickBite – Food Delivery App
+Food delivery REST API with 4 user roles (customer, restaurant owner, delivery agent, admin) with JWT authentication and role-based guards.
+
+- **Technologies**: TypeScript, NestJS, PostgreSQL, TypeORM, JWT
+- **GitHub**: https://github.com/mashudhahmed/food-delivery-fullstack
+
+## Technical Skills
+
+### Frontend
+- JavaScript (Advanced), TypeScript (Advanced), React (Advanced)
+- Next.js (Intermediate), TailwindCSS (Advanced)
+- HTML5 (Expert), Framer Motion (Intermediate)
+
+### Backend & DevOps
+- Node.js/NestJS (Advanced), REST APIs (Advanced)
+- JWT (Advanced), Docker (Intermediate)
+- Git/GitHub (Advanced), Postman (Advanced), Swagger UI (Advanced)
+
+### Database & Tools
+- PostgreSQL (Intermediate), TypeORM (Advanced)
+- Firebase (Intermediate)
+
+### Languages
+- C++ (Intermediate), Kotlin (Intermediate)
+
+## Education
+
+**Bachelor of Science in Computer Science and Engineering**
+American International University - Bangladesh
+Major: Software Engineering | 2022 – 2026
+
+### Relevant Coursework
+Data Structures, Algorithms, Advanced Programming in Web Technology, Mobile Application Development, Software Requirement Engineering, Advanced Database Management System

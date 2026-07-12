@@ -1,0 +1,99 @@
+# Mashudh Ahmed - Full-Stack Developer Portfolio
+
+## Complete Portfolio Information
+
+### Personal Information
+- **Full Name**: Mashudh Ahmed
+- **Title**: Full-Stack Developer & CSE Student
+- **Location**: Dhaka, Bangladesh
+- **Email**: mashudh.ahmed@outlook.com
+- **GitHub**: https://github.com/mashudhahmed
+- **LinkedIn**: https://linkedin.com/in/mashudhahmed
+- **Available for Work**: Yes
+
+### Professional Summary
+I'm a passionate Computer Science and Engineering student majoring in Software Engineering at American International University - Bangladesh. I build high-performance web applications with Next.js, NestJS, and PostgreSQL. I love solving complex problems with clean, elegant code. This portfolio is powered by a full-stack architecture with a terminal-inspired UI.
+
+### Technical Skills
+
+#### Frontend Technologies
+- **JavaScript**: Advanced - 4+ years
+- **TypeScript**: Advanced - 3+ years
+- **React**: Advanced - 3+ years
+- **Next.js**: Intermediate - 2+ years
+- **TailwindCSS**: Advanced - 3+ years
+- **HTML5**: Expert - 5+ years
+- **Framer Motion**: Intermediate - 1+ years
+
+#### Backend & DevOps
+- **Node.js/NestJS**: Advanced - 3+ years
+- **REST APIs**: Advanced - 3+ years
+- **JWT Authentication**: Advanced - 2+ years
+- **Docker**: Intermediate - 1+ years
+- **Git/GitHub**: Advanced - 4+ years
+- **Postman**: Advanced - 3+ years
+- **Swagger UI**: Advanced - 2+ years
+
+#### Database & Tools
+- **PostgreSQL**: Intermediate - 2+ years
+- **TypeORM**: Advanced - 2+ years
+- **Firebase**: Intermediate - 2+ years
+
+#### Programming Languages
+- **C++**: Intermediate - 2+ years
+- **Kotlin**: Intermediate - 2+ years
+
+### Projects
+
+#### 1. SnapCart – E-Commerce App
+Full-stack e-commerce backend with NestJS featuring JWT authentication, role-based access control, product management, cart system, and order handling. Built with clean architecture for real-world scalability.
+
+- **Technologies**: TypeScript, NestJS, PostgreSQL, JWT, REST API
+- **GitHub**: https://github.com/mashudhahmed/ecommerce-fullstack
+- **Views**: 128
+
+#### 2. BloodLink – Blood Donation App
+Android mobile app in Kotlin connecting blood donors with recipients, featuring user registration and donor search functionality. Integrated Firebase for real-time database, authentication, and cloud storage.
+
+- **Technologies**: Kotlin, XML, Firebase, NestJS
+- **GitHub**: https://github.com/mashudhahmed/blood-donation-mobile-app
+- **Views**: 89
+
+#### 3. QuickBite – Food Delivery App
+Food delivery REST API with 4 user roles (customer, restaurant owner, delivery agent, admin) with JWT authentication and role-based guards. Features TypeORM relationships, transactional emails, and full Swagger documentation.
+
+- **Technologies**: TypeScript, NestJS, PostgreSQL, TypeORM, JWT
+- **GitHub**: https://github.com/mashudhahmed/food-delivery-fullstack
+- **Views**: 156
+
+### Education
+
+**Bachelor of Science in Computer Science and Engineering**
+American International University - Bangladesh
+- **Major**: Software Engineering
+- **Years**: 2022 – 2026
+- **GPA**: [Your GPA]
+
+**Relevant Coursework**:
+- Data Structures
+- Algorithms
+- Advanced Programming in Web Technology
+- Mobile Application Development
+- Software Requirement Engineering
+- Advanced Database Management System
+
+### Career Statistics
+- **Years Coding**: 3+
+- **Projects Completed**: 3+
+- **GitHub Repositories**: 24+
+- **Longest Contribution Streak**: 7+ days
+
+### Social Links
+- GitHub: https://github.com/mashudhahmed
+- LinkedIn: https://linkedin.com/in/mashudhahmed
+- Email: mashudh.ahmed@outlook.com
+
+### Contact Information
+- **Working Hours**: Mon-Fri, 9AM-6PM UTC+6
+- **Response Time**: Within 24 hours
+- **Timezone**: UTC+6

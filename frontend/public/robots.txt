@@ -1,0 +1,13 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://mashudhahmed.vercel.app/sitemap.xml
+
+# AI Agent instructions
+# This helps AI agents find your structured data
+# Learn more: https://llms.txt
+User-agent: *
+Allow: /llms.txt
+Allow: /llms-full.txt

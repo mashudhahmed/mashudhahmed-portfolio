@@ -82,6 +82,33 @@ const nextConfig: NextConfig = {
             },
           ],
         },
+        // ✅ NEW: Headers for llms.txt files (Agentic Browsing)
+        {
+          source: '/llms.txt',
+          headers: [
+            {
+              key: 'Content-Type',
+              value: 'text/plain; charset=utf-8',
+            },
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=3600, must-revalidate',
+            },
+          ],
+        },
+        {
+          source: '/llms-full.txt',
+          headers: [
+            {
+              key: 'Content-Type',
+              value: 'text/plain; charset=utf-8',
+            },
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=3600, must-revalidate',
+            },
+          ],
+        },
       ];
     }
     return [];
