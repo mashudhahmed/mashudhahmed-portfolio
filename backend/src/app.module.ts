@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import * as Joi from 'joi';
 import { ProjectsModule } from './projects/projects.module';
 import { AdminModule } from './admin/admin.module';
@@ -15,6 +15,9 @@ import { SettingsModule } from './settings/settings.module';
 import { StatsModule } from './stats/stats.module';
 import { HealthModule } from './health/health.module';
 import { ResumeModule } from './resume/resume.module';
+import { ContactModule } from './contact/contact.module';
+import { CommonModule } from './common/common.module';
+import { CacheInterceptor } from './common/interceptors/cache.interceptor';
 import { Project } from './projects/project.entity';
 import { Visitor } from './visitor/visitor.entity';
 import { Skill } from './skills/skill.entity';
@@ -22,9 +25,8 @@ import { About } from './about/about.entity';
 import { ContactInfo } from './contact-info/contact-info.entity';
 import { SocialLink } from './social/social.entity';
 import { Setting } from './settings/setting.entity';
-import { ContactModule } from './contact/contact.module';
 import { Message } from './contact/message.entity';
-import { Resume } from './resume/resume.entity';  // ✅ ADD THIS IMPORT
+import { Resume } from './resume/resume.entity';
 
 @Module({
   imports: [
@@ -47,19 +49,20 @@ import { Resume } from './resume/resume.entity';  // ✅ ADD THIS IMPORT
       limit: 10,
     }]),
     
-    // Database - ADD Resume to entities array
+    // Database
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         url: config.get('DATABASE_URL'),
-        entities: [Project, Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message, Resume],  // ✅ ADD Resume here
+        entities: [Project, Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message, Resume],
         synchronize: config.get('NODE_ENV') !== 'production',
         ssl: config.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
       }),
     }),
     
     // Feature modules
+    CommonModule, // ✅ Add this
     ProjectsModule,
     AdminModule,
     VisitorModule,
@@ -71,13 +74,18 @@ import { Resume } from './resume/resume.entity';  // ✅ ADD THIS IMPORT
     StatsModule,
     ContactModule,
     HealthModule,
-    ResumeModule,  // ✅ Make sure this is here
+    ResumeModule,
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    // ✅ Optional: Enable cache globally
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CacheInterceptor,
+    // },
   ],
 })
 export class AppModule {}

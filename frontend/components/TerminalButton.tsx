@@ -1,9 +1,12 @@
 'use client';
-import { useState } from 'react';
-import TerminalModal from './TerminalModal';
+import { useState, lazy, Suspense } from 'react';
+
+// ✅ Lazy load TerminalModal only when needed (industry standard)
+const TerminalModal = lazy(() => import('@/components/TerminalModal'));
 
 export default function TerminalButton() {
   const [isOpen, setIsOpen] = useState(false);
+  
   return (
     <>
       <button
@@ -13,7 +16,15 @@ export default function TerminalButton() {
         <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
         ${'>'} open terminal
       </button>
-      <TerminalModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      {isOpen && (
+        <Suspense fallback={
+          <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
+            <div className="text-green-400 animate-pulse">Loading Terminal...</div>
+          </div>
+        }>
+          <TerminalModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

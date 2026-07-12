@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { parseCommand, CommandOutput } from './CommandParser';
 import { commands } from './CommandList';
@@ -67,7 +67,6 @@ export default function Terminal({ onClose }: { onClose?: () => void }) {
     setHistory(prev => [...prev, { type: 'command', content: `$> ${cmd}` }]);
 
     if (waitingForContact) {
-      // contact wizard logic
       if (!contactData.name) {
         setContactData({ ...contactData, name: cmd });
         setHistory(prev => [...prev, { type: 'text', content: 'Enter your email:' }]);
@@ -105,7 +104,11 @@ export default function Terminal({ onClose }: { onClose?: () => void }) {
   return (
     <div className="h-full w-full bg-black text-green-400 font-mono flex flex-col">
       <div className="flex justify-between px-4 py-2 bg-gray-900 border-b border-gray-700">
-        <div className="flex gap-2"><div className="w-3 h-3 rounded-full bg-red-500"></div><div className="w-3 h-3 rounded-full bg-yellow-500"></div><div className="w-3 h-3 rounded-full bg-green-500"></div></div>
+        <div className="flex gap-2">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        </div>
         <span className="text-gray-400 text-sm">mashudh@portfolio:~</span>
         <button onClick={() => onClose?.()} className="text-gray-500 hover:text-red-400">✕ Exit</button>
       </div>

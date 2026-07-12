@@ -1,7 +1,8 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { CacheService } from './cache.service';
+import { CacheService } from '../services/cache.service';
+  
 
 @Injectable()
 export class CacheInterceptor implements NestInterceptor {

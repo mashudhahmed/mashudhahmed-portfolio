@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { color, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   SiReact,
   SiNodedotjs,
@@ -40,21 +40,48 @@ const icons = [
   { Icon: SiJavascript, color: '#F7DF1E' },
   { Icon: SiHtml5, color: '#E34F26' },
   { Icon: SiPostman, color: '#FF6C37' },
-  { Icon: SiCss, color: '#1572B6'}
-  
+  { Icon: SiCss, color: '#1572B6' }
 ];
 
 export default function FloatingIcons() {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // ✅ Only render on larger screens and after idle time
+    const handleVisibility = () => {
+      if (window.innerWidth > 768) {
+        // Use requestIdleCallback for non-critical work (industry standard)
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(() => setIsVisible(true));
+        } else {
+          // Fallback for older browsers
+          setTimeout(() => setIsVisible(true), 500);
+        }
+      }
+    };
+    
+    handleVisibility();
     setDimensions({ width: window.innerWidth, height: window.innerHeight });
-    const handleResize = () => setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    
+    const handleResize = () => {
+      setDimensions({ width: window.innerWidth, height: window.innerHeight });
+      // Re-check visibility on resize
+      if (window.innerWidth > 768) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+    
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (dimensions.width === 0) return null;
+  // ✅ Don't render on mobile or before visibility check
+  if (!isVisible || dimensions.width === 0 || dimensions.width <= 768) {
+    return null;
+  }
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -81,7 +108,7 @@ export default function FloatingIcons() {
               y: { duration, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' },
               opacity: { delay, duration: 0.8, ease: 'easeOut' },
             }}
-            style={{ fontSize: size }}
+            style={{ fontSize: size, willChange: 'transform, opacity' }} // ✅ Browser optimization hint
           >
             <Icon style={{ color, opacity: finalOpacity }} />
           </motion.div>

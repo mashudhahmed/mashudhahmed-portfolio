@@ -13,6 +13,15 @@ export default function BackgroundCanvas() {
     let animationId: number;
     let particles: Array<{ x: number; y: number; size: number; speedX: number; speedY: number; alpha: number }> = [];
     let gridLines: Array<{ x: number; y: number; alpha: number }> = [];
+    let isVisible = true;
+
+    // ✅ Pause animations when tab is not visible (industry standard)
+    const handleVisibilityChange = () => {
+      isVisible = !document.hidden;
+      if (isVisible) {
+        draw();
+      }
+    };
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -24,7 +33,10 @@ export default function BackgroundCanvas() {
     const initParticles = () => {
       particles = [];
       const count = Math.floor((canvas.width * canvas.height) / 20000);
-      for (let i = 0; i < count; i++) {
+      // ✅ Limit particles for performance
+      const maxParticles = 150;
+      const particleCount = Math.min(count, maxParticles);
+      for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
@@ -39,15 +51,23 @@ export default function BackgroundCanvas() {
     const initGrid = () => {
       gridLines = [];
       const spacing = 50;
-      for (let x = 0; x < canvas.width; x += spacing) {
-        for (let y = 0; y < canvas.height; y += spacing) {
+      // ✅ Limit grid lines for performance
+      const maxLines = 200;
+      let count = 0;
+      for (let x = 0; x < canvas.width && count < maxLines; x += spacing) {
+        for (let y = 0; y < canvas.height && count < maxLines; y += spacing) {
           gridLines.push({ x, y, alpha: Math.random() * 0.1 + 0.02 });
+          count++;
         }
       }
     };
 
     const draw = () => {
-      if (!ctx) return;
+      if (!ctx || !isVisible) {
+        animationId = requestAnimationFrame(draw);
+        return;
+      }
+      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = '#030a05';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -67,7 +87,7 @@ export default function BackgroundCanvas() {
         ctx.stroke();
       }
 
-      // Particles (much subtler)
+      // Particles
       for (const p of particles) {
         ctx.globalAlpha = p.alpha;
         ctx.fillStyle = '#4ade80';
@@ -85,12 +105,16 @@ export default function BackgroundCanvas() {
       animationId = requestAnimationFrame(draw);
     };
 
-    window.addEventListener('resize', resize);
+    // ✅ Use passive event listeners for better scroll performance
+    window.addEventListener('resize', resize, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibilityChange, { passive: true });
+    
     resize();
     draw();
 
     return () => {
       window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       cancelAnimationFrame(animationId);
     };
   }, []);

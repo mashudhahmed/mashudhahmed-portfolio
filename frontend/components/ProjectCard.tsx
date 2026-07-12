@@ -1,16 +1,27 @@
 'use client';
+import Image from 'next/image';
 import { ExternalLink, Eye } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
+import { Project } from '@/lib/fallbackData';
 
-export default function ProjectCard({ project }: { project: any }) {
+// ✅ Industry standard blur placeholder (tiny base64 image)
+const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8A/9k=';
+
+export default function ProjectCard({ project }: { project: Project }) {
   return (
     <div className="group relative bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/10 cursor-pointer border border-gray-700 hover:border-green-500/50">
-      {/* Image section - zooms on hover */}
-      <div className="relative h-48 w-full overflow-hidden">
-        <img
+      {/* ✅ Optimized image section */}
+      <div className="relative h-48 w-full overflow-hidden bg-gray-800">
+        <Image
           src={project.imageUrl}
           alt={project.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={false}
+          placeholder="blur"
+          blurDataURL={BLUR_DATA_URL}
+          quality={85}
         />
         {/* Dark overlay - appears on hover */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">

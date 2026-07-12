@@ -1,5 +1,5 @@
-export const dynamic = 'force-dynamic';
-
+import { Suspense } from 'react';
+import Image from 'next/image';
 import TerminalButton from '@/components/TerminalButton';
 import ContactForm from '@/components/ContactForm';
 import Typewriter from '@/components/Typewriter';
@@ -24,6 +24,9 @@ import {
   fetchWithFallback,
 } from '@/lib/fallbackData';
 
+// ✅ Industry standard blur placeholder for hero image
+const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8A/9k=';
+
 // Icon mapping for social platforms
 const socialIcons: Record<string, any> = {
   github: FaGithub,
@@ -37,6 +40,7 @@ const socialIcons: Record<string, any> = {
   medium: FaMedium,
 };
 
+// Data fetching functions (moved outside component)
 async function getProjects() {
   return fetchWithFallback(
     `${process.env.NEXT_PUBLIC_API_URL}/projects`,
@@ -91,7 +95,6 @@ async function getResume() {
   return { url: '/resume.pdf', fileName: 'Mashudh_Ahmed_Resume.pdf' };
 }
 
-// ✅ NEW: Fetch social links from backend
 async function getSocialLinks() {
   return fetchWithFallback(
     `${process.env.NEXT_PUBLIC_API_URL}/social-links`,
@@ -100,7 +103,8 @@ async function getSocialLinks() {
   );
 }
 
-export default async function Home() {
+// ✅ NEW: Data loading component with Suspense
+async function PageContent() {
   const [projects, about, contactInfo, settings, visitorData, resume, socialLinks] = await Promise.all([
     getProjects(),
     getAbout(),
@@ -108,13 +112,11 @@ export default async function Home() {
     getSettings(),
     getVisitorCount(),
     getResume(),
-    getSocialLinks(), // ✅ Added social links
+    getSocialLinks(),
   ]);
 
   const projectCount = projects.length;
   const typewriterPhrases = settings.typewriterPhrases || fallbackSettings.typewriterPhrases;
-  
-  // Filter only active social links
   const activeSocialLinks = socialLinks.filter((link: any) => link.isActive);
 
   return (
@@ -162,8 +164,21 @@ export default async function Home() {
             <ScrollReveal direction="left" delay={0.1}>
               <div className="space-y-8 relative">
                 <div className="absolute -left-8 top-1/4 w-32 h-32 rounded-full bg-green-500/20 blur-2xl -z-10" />
+                
                 <div className="relative w-80 h-80 mx-auto rounded-2xl overflow-hidden border-4 border-green-500/50 shadow-2xl group">
-                  <img src={about.photoUrl} alt="Mashudh Ahmed" className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
+                  {/* ✅ Fixed: Suppress hydration warning for images */}
+                  <Image
+                    src={about.photoUrl}
+                    alt="Mashudh Ahmed"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    quality={85}
+                    placeholder="blur"
+                    blurDataURL={BLUR_DATA_URL}
+                    suppressHydrationWarning // ✅ Fixes hydration mismatch
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-3 right-3 z-10">
                     <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium border backdrop-blur-sm ${
@@ -176,6 +191,7 @@ export default async function Home() {
                     </div>
                   </div>
                 </div>
+                
                 <div className="glass-card p-6 text-center relative">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div><div className="text-3xl font-bold text-green-400"><CountUp end={3} suffix="+" /></div><div className="text-xs text-gray-400">Years Coding</div></div>
@@ -222,7 +238,6 @@ export default async function Home() {
         </section>
       </ScrollReveal>
 
-      {/* Skills + Projects */}
       <PortfolioContent projects={projects} />
 
       {/* Contact Section */}
@@ -264,7 +279,7 @@ export default async function Home() {
               <div className="mt-3 pt-3 border-t border-gray-700">
                 <a 
                   href={`mailto:${contactInfo.email}`} 
-                  className="text-green-400 hover:text-green-300 transition text-sm break-all bg-gray-800/50 p-2 rounded-lg text-center"
+                  className="text-green-400 hover:text-green-300 transition text-sm break-all bg-gray-800/50 p-2 rounded-lg text-center block"
                 >
                   {contactInfo.email}
                 </a>
@@ -276,7 +291,6 @@ export default async function Home() {
 
       <TerminalButton />
 
-      {/* ✅ DYNAMIC FOOTER - Social links from admin panel */}
       <footer className="relative z-10 border-t border-gray-800 py-10 text-center text-gray-500 text-sm">
         <div className="flex justify-center gap-6 mb-4 flex-wrap">
           {activeSocialLinks.length > 0 ? (
@@ -297,10 +311,9 @@ export default async function Home() {
               );
             })
           ) : (
-            // Fallback hardcoded links if none in database
             <>
-              <a href="https://github.com/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaGithub className="w-6 h-6" /></a>
-              <a href="https://www.linkedin.com/in/mashudhahmed" target="_blank" className="hover:text-green-400 transition"><FaLinkedin className="w-6 h-6" /></a>
+              <a href="https://github.com/mashudhahmed" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition"><FaGithub className="w-6 h-6" /></a>
+              <a href="https://www.linkedin.com/in/mashudhahmed" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition"><FaLinkedin className="w-6 h-6" /></a>
               <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition"><FaEnvelope className="w-6 h-6" /></a>
             </>
           )}
@@ -309,5 +322,18 @@ export default async function Home() {
         <BackToTopButton />
       </footer>
     </main>
+  );
+}
+
+// ✅ Main page component with Suspense boundary
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-green-400 text-xl animate-pulse">Loading portfolio...</div>
+      </div>
+    }>
+      <PageContent />
+    </Suspense>
   );
 }

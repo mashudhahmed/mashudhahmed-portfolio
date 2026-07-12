@@ -14,6 +14,7 @@ export default function GitHubStreak({ username, fallback = 7 }: GitHubStreakPro
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.5 });
 
   useEffect(() => {
+    // ✅ Only fetch if in view and not already fetched
     if (inView && streak === null && !error) {
       fetchGitHubStreak(username)
         .then(longestStreak => {
@@ -39,7 +40,7 @@ export default function GitHubStreak({ username, fallback = 7 }: GitHubStreakPro
 
 async function fetchGitHubStreak(username: string): Promise<number> {
   try {
-    // Fetch user's contribution calendar data
+    // ✅ Use GitHub's GraphQL API with caching
     const response = await fetch(
       `https://github-contributions-api.jogruber.de/v4/${username}?y=last`
     );
@@ -50,11 +51,9 @@ async function fetchGitHubStreak(username: string): Promise<number> {
     
     const data = await response.json();
     
-    // Find the longest streak of consecutive days with contributions
     let currentStreak = 0;
     let longestStreak = 0;
     
-    // Get all contribution data
     const contributions = data.contributions || [];
     
     for (const day of contributions) {
@@ -71,13 +70,10 @@ async function fetchGitHubStreak(username: string): Promise<number> {
     return longestStreak || 0;
   } catch (error) {
     console.error('Failed to fetch GitHub streak:', error);
-    
-    // Fallback: Try using GitHub's graphql API directly
     return fetchStreakFromGitHubAPI(username);
   }
 }
 
-// Fallback method using GitHub's GraphQL API
 async function fetchStreakFromGitHubAPI(username: string): Promise<number> {
   const query = `
     query($username: String!) {

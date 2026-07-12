@@ -14,7 +14,7 @@ export default function ScrollReveal({ children, direction = 'up', delay = 0 }: 
       case 'left': return { opacity: 0, x: -50 };
       case 'right': return { opacity: 0, x: 50 };
       case 'down': return { opacity: 0, y: 50 };
-      default: return { opacity: 0, y: 50 }; // up
+      default: return { opacity: 0, y: 50 };
     }
   };
 
@@ -24,6 +24,7 @@ export default function ScrollReveal({ children, direction = 'up', delay = 0 }: 
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       transition={{ duration: 0.6, delay }}
       viewport={{ once: true, margin: '-100px' }}
+      style={{ willChange: 'transform, opacity' }} // ✅ Browser optimization hint
     >
       {children}
     </motion.div>
