@@ -25,7 +25,6 @@ export class SettingsService implements OnModuleInit {
         result[setting.key] = setting.value;
       }
     }
-    // Only return what's needed for the portfolio
     return {
       typewriterPhrases: result.typewriterPhrases || ['Full‑Stack Developer', 'Problem Solver', 'Tech Enthusiast', 'Creative Technologist'],
       footerText: result.footerText || 'Built with Next.js & NestJS',
@@ -37,15 +36,12 @@ export class SettingsService implements OnModuleInit {
       if (value !== undefined) {
         const serialized = typeof value === 'object' ? JSON.stringify(value) : String(value);
         
-        // Find existing record
         const existing = await this.settingsRepo.findOne({ where: { key } });
         
         if (existing) {
-          // Update existing
           existing.value = serialized;
           await this.settingsRepo.save(existing);
         } else {
-          // Insert new
           await this.settingsRepo.save({ key, value: serialized });
         }
       }

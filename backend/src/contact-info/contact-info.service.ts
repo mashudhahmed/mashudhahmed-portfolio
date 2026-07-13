@@ -14,6 +14,7 @@ export class ContactInfoService {
   async getContactInfo(): Promise<ContactInfo> {
     let info = await this.contactInfoRepo.findOne({ where: { id: 1 } });
     if (!info) {
+      // ✅ Create with explicit ID 1
       info = this.contactInfoRepo.create({
         id: 1,
         email: 'mashudh.ahmed@outlook.com',
@@ -29,6 +30,17 @@ export class ContactInfoService {
   }
 
   async updateContactInfo(dto: UpdateContactInfoDto): Promise<ContactInfo> {
+    // ✅ Check if record exists first
+    const existing = await this.contactInfoRepo.findOne({ where: { id: 1 } });
+    if (!existing) {
+      const newInfo = this.contactInfoRepo.create({
+        id: 1,
+        ...dto,
+      });
+      await this.contactInfoRepo.save(newInfo);
+      return newInfo;
+    }
+    
     await this.contactInfoRepo.update(1, dto);
     return this.getContactInfo();
   }
