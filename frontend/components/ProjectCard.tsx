@@ -4,24 +4,23 @@ import { ExternalLink, Eye } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { Project } from '@/lib/fallbackData';
 
-// ✅ Industry standard blur placeholder (tiny base64 image)
 const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8A/9k=';
 
 export default function ProjectCard({ project }: { project: Project }) {
   return (
     <div className="group relative bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/10 cursor-pointer border border-gray-700 hover:border-green-500/50">
-      {/* ✅ Optimized image section */}
+      {/* ✅ Optimized image section with proper alt text */}
       <div className="relative h-48 w-full overflow-hidden bg-gray-800">
         <Image
           src={project.imageUrl}
-          alt={project.title}
+          alt={`${project.title} - ${project.technologies.join(', ')} project screenshot`}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority={false}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          quality={75}
+          loading="lazy"
           placeholder="blur"
           blurDataURL={BLUR_DATA_URL}
-          quality={85}
         />
         {/* Dark overlay - appears on hover */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
@@ -31,8 +30,9 @@ export default function ProjectCard({ project }: { project: Project }) {
             rel="noopener noreferrer"
             className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-medium hover:bg-green-600 transition-all duration-200 flex items-center gap-2"
             onClick={(e) => e.stopPropagation()}
+            aria-label={`View ${project.title} on GitHub`}
           >
-            <FaGithub className="w-4 h-4" />
+            <FaGithub className="w-4 h-4" aria-hidden="true" />
             GitHub
           </a>
           {project.liveUrl && (
@@ -42,8 +42,9 @@ export default function ProjectCard({ project }: { project: Project }) {
               rel="noopener noreferrer"
               className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-medium hover:bg-green-600 transition-all duration-200 flex items-center gap-2"
               onClick={(e) => e.stopPropagation()}
+              aria-label={`View ${project.title} live demo`}
             >
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-4 h-4" aria-hidden="true" />
               Live
             </a>
           )}
@@ -55,7 +56,7 @@ export default function ProjectCard({ project }: { project: Project }) {
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-xl font-bold text-white line-clamp-1">{project.title}</h3>
           <div className="flex items-center gap-1 text-xs text-gray-400">
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="w-3.5 h-3.5" aria-hidden="true" />
             {project.views}
           </div>
         </div>

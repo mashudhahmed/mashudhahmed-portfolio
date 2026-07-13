@@ -218,12 +218,12 @@ async function PageContent() {
                 <div className="relative w-80 h-80 mx-auto rounded-2xl overflow-hidden border-4 border-green-500/50 shadow-2xl group">
                   <Image
                     src={about.photoUrl}
-                    alt="Mashudh Ahmed"
+                    alt="Mashudh Ahmed - Full-Stack Developer"
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     priority
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    quality={85}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    quality={75}
                     placeholder="blur"
                     blurDataURL={BLUR_DATA_URL}
                     suppressHydrationWarning
@@ -340,6 +340,7 @@ async function PageContent() {
 
       <TerminalButton />
 
+      {/* ✅ DYNAMIC FOOTER - Social links with accessibility attributes */}
       <footer className="relative z-10 border-t border-gray-800 py-10 text-center text-gray-500 text-sm">
         <div className="flex justify-center gap-6 mb-4 flex-wrap">
           {activeSocialLinks.length > 0 ? (
@@ -353,17 +354,45 @@ async function PageContent() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-green-400 transition transform hover:scale-110 duration-200"
-                  aria-label={link.platform}
+                  aria-label={`${link.platform} profile`}
                 >
-                  <IconComponent className="w-6 h-6" />
+                  <IconComponent 
+                    className="w-6 h-6" 
+                    role="img"
+                    aria-hidden="false"
+                    focusable="false"
+                  />
                 </a>
               );
             })
           ) : (
+            // Fallback links with accessibility attributes
             <>
-              <a href="https://github.com/mashudhahmed" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition"><FaGithub className="w-6 h-6" /></a>
-              <a href="https://www.linkedin.com/in/mashudhahmed" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition"><FaLinkedin className="w-6 h-6" /></a>
-              <a href="mailto:mashudh.ahmed@outlook.com" className="hover:text-green-400 transition"><FaEnvelope className="w-6 h-6" /></a>
+              <a 
+                href="https://github.com/mashudhahmed" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-green-400 transition"
+                aria-label="GitHub profile"
+              >
+                <FaGithub className="w-6 h-6" role="img" aria-hidden="false" focusable="false" />
+              </a>
+              <a 
+                href="https://www.linkedin.com/in/mashudhahmed" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-green-400 transition"
+                aria-label="LinkedIn profile"
+              >
+                <FaLinkedin className="w-6 h-6" role="img" aria-hidden="false" focusable="false" />
+              </a>
+              <a 
+                href="mailto:mashudh.ahmed@outlook.com" 
+                className="hover:text-green-400 transition"
+                aria-label="Email contact"
+              >
+                <FaEnvelope className="w-6 h-6" role="img" aria-hidden="false" focusable="false" />
+              </a>
             </>
           )}
         </div>

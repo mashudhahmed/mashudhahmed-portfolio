@@ -12,7 +12,6 @@ interface Skill {
   isActive: boolean;
 }
 
-// ✅ Brand colors for each technology
 const getIconColor = (skillName: string): string => {
   const colors: Record<string, string> = {
     JavaScript: '#F7DF1E',
@@ -87,10 +86,17 @@ export default function SkillItem({ skill }: { skill: Skill }) {
     <div
       ref={ref}
       className="flex flex-col p-3 rounded-xl bg-gray-900/50 border border-gray-700 transition-all duration-200 hover:scale-105 hover:border-green-500/50 cursor-default"
-      style={{ willChange: 'transform' }} // ✅ Browser optimization hint
+      style={{ willChange: 'transform' }}
     >
       <div className="flex items-center gap-3 mb-1">
-        <IconComponent className="w-6 h-6" style={{ color: iconColor }} />
+        {/* ✅ Fixed: Added proper accessibility attributes to SVG icons */}
+        <IconComponent 
+          className="w-6 h-6" 
+          style={{ color: iconColor }}
+          role="img"
+          aria-label={`${skill.name} icon`}
+          focusable="false"
+        />
         <span className="font-medium text-white text-sm">{skill.name}</span>
       </div>
       <SkillBar level={skill.level} inView={inView} />

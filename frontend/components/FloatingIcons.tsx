@@ -48,16 +48,17 @@ export default function FloatingIcons() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // ✅ Only render on larger screens and after idle time
     const handleVisibility = () => {
-      if (window.innerWidth > 768) {
-        // Use requestIdleCallback for non-critical work (industry standard)
+      const isMobile = window.innerWidth <= 768;
+      
+      if (!isMobile) {
         if ('requestIdleCallback' in window) {
           requestIdleCallback(() => setIsVisible(true));
         } else {
-          // Fallback for older browsers
           setTimeout(() => setIsVisible(true), 500);
         }
+      } else {
+        setIsVisible(false);
       }
     };
     
@@ -66,7 +67,6 @@ export default function FloatingIcons() {
     
     const handleResize = () => {
       setDimensions({ width: window.innerWidth, height: window.innerHeight });
-      // Re-check visibility on resize
       if (window.innerWidth > 768) {
         setIsVisible(true);
       } else {
@@ -78,7 +78,6 @@ export default function FloatingIcons() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // ✅ Don't render on mobile or before visibility check
   if (!isVisible || dimensions.width === 0 || dimensions.width <= 768) {
     return null;
   }
@@ -108,9 +107,15 @@ export default function FloatingIcons() {
               y: { duration, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' },
               opacity: { delay, duration: 0.8, ease: 'easeOut' },
             }}
-            style={{ fontSize: size, willChange: 'transform, opacity' }} // ✅ Browser optimization hint
+            style={{ fontSize: size, willChange: 'transform, opacity' }}
           >
-            <Icon style={{ color, opacity: finalOpacity }} />
+            {/* ✅ Fixed: Added aria-hidden for decorative icons */}
+            <Icon 
+              style={{ color, opacity: finalOpacity }} 
+              aria-hidden="true"
+              focusable="false"
+              role="presentation"
+            />
           </motion.div>
         );
       })}
