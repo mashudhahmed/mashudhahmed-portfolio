@@ -24,7 +24,7 @@ export default function ScrollReveal({ children, direction = 'up', delay = 0 }: 
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       transition={{ duration: 0.6, delay }}
       viewport={{ once: true, margin: '-100px' }}
-      style={{ willChange: 'transform, opacity' }} // ✅ Browser optimization hint
+      style={{ willChange: 'transform, opacity' }}
     >
       {children}
     </motion.div>

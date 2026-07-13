@@ -109,7 +109,7 @@ export default function FloatingIcons() {
             }}
             style={{ fontSize: size, willChange: 'transform, opacity' }}
           >
-            {/* ✅ Fixed: Added aria-hidden for decorative icons */}
+            {/* ✅ Fixed: Properly hide decorative icons from accessibility tree */}
             <Icon 
               style={{ color, opacity: finalOpacity }} 
               aria-hidden="true"

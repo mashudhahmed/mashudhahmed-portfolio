@@ -89,13 +89,13 @@ export default function SkillItem({ skill }: { skill: Skill }) {
       style={{ willChange: 'transform' }}
     >
       <div className="flex items-center gap-3 mb-1">
-        {/* ✅ Fixed: Added proper accessibility attributes to SVG icons */}
+        {/* ✅ Fixed: SVG icons with proper accessibility - icons are decorative */}
         <IconComponent 
           className="w-6 h-6" 
           style={{ color: iconColor }}
-          role="img"
-          aria-label={`${skill.name} icon`}
+          aria-hidden="true"
           focusable="false"
+          role="presentation"
         />
         <span className="font-medium text-white text-sm">{skill.name}</span>
       </div>

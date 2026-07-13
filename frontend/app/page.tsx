@@ -358,8 +358,7 @@ async function PageContent() {
                 >
                   <IconComponent 
                     className="w-6 h-6" 
-                    role="img"
-                    aria-hidden="false"
+                    aria-hidden="true"
                     focusable="false"
                   />
                 </a>
@@ -375,7 +374,7 @@ async function PageContent() {
                 className="hover:text-green-400 transition"
                 aria-label="GitHub profile"
               >
-                <FaGithub className="w-6 h-6" role="img" aria-hidden="false" focusable="false" />
+                <FaGithub className="w-6 h-6" aria-hidden="true" focusable="false" />
               </a>
               <a 
                 href="https://www.linkedin.com/in/mashudhahmed" 
@@ -384,14 +383,14 @@ async function PageContent() {
                 className="hover:text-green-400 transition"
                 aria-label="LinkedIn profile"
               >
-                <FaLinkedin className="w-6 h-6" role="img" aria-hidden="false" focusable="false" />
+                <FaLinkedin className="w-6 h-6" aria-hidden="true" focusable="false" />
               </a>
               <a 
                 href="mailto:mashudh.ahmed@outlook.com" 
                 className="hover:text-green-400 transition"
                 aria-label="Email contact"
               >
-                <FaEnvelope className="w-6 h-6" role="img" aria-hidden="false" focusable="false" />
+                <FaEnvelope className="w-6 h-6" aria-hidden="true" focusable="false" />
               </a>
             </>
           )}

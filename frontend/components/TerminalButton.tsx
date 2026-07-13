@@ -1,7 +1,7 @@
 'use client';
 import { useState, lazy, Suspense } from 'react';
 
-// ✅ Lazy load TerminalModal only when needed (industry standard)
+// ✅ Lazy load TerminalModal only when needed
 const TerminalModal = lazy(() => import('@/components/TerminalModal'));
 
 export default function TerminalButton() {

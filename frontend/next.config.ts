@@ -40,6 +40,9 @@ const nextConfig: NextConfig = {
   
   turbopack: {},
   
+  // ✅ Enable source maps for debugging
+  productionBrowserSourceMaps: true,
+  
   async headers() {
     if (process.env.NODE_ENV === 'production') {
       return [
@@ -82,7 +85,6 @@ const nextConfig: NextConfig = {
             },
           ],
         },
-        // ✅ NEW: Headers for llms.txt files (Agentic Browsing)
         {
           source: '/llms.txt',
           headers: [

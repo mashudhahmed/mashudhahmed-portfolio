@@ -13,7 +13,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
+    // ✅ Log to console for debugging
     console.error('Global error:', error);
   }, [error]);
 
@@ -41,11 +41,6 @@ export default function GlobalError({
                 Go back home
               </a>
             </div>
-            {error.digest && (
-              <p className="text-xs text-gray-500 mt-6">
-                Error ID: {error.digest}
-              </p>
-            )}
           </div>
         </div>
       </body>
