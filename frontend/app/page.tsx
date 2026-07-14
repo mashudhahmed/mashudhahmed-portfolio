@@ -217,13 +217,14 @@ async function PageContent() {
                 
                 <div className="relative w-80 h-80 mx-auto rounded-2xl overflow-hidden border-4 border-green-500/50 shadow-2xl group">
                   <Image
-                    src={about.photoUrl}
+                    src={about.photoUrl || 'https://ui-avatars.com/api/?name=Mashudh+Ahmed&size=400&background=0D8ABC&color=fff&bold=true'}
                     alt="Mashudh Ahmed - Full-Stack Developer"
                     fill
                     priority
                     fetchPriority="high"
+                    loading="eager"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    quality={80}
+                    quality={75}
                     placeholder="blur"
                     blurDataURL={BLUR_DATA_URL}
                     suppressHydrationWarning

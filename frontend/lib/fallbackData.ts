@@ -94,7 +94,7 @@ export interface AboutData {
 
 export const fallbackAbout: AboutData = {
   bio: "I'm a passionate CSE student majoring in Software Engineering. I build high‑performance web applications with Next.js, NestJS, and PostgreSQL. I love solving complex problems with clean, elegant code. This portfolio is powered by a full-stack architecture with a terminal-inspired UI.",
-  photoUrl: "/your-photo.jpg",
+  photoUrl: 'https://ui-avatars.com/api/?name=Mashudh+Ahmed&size=400&background=0D8ABC&color=fff&bold=true', // ✅ Fixed: Using UI Avatars as fallback
   education: "Bachelor of Science in Computer Science and Engineering",
   university: "American International University - Bangladesh",
   major: "Software Engineering",
