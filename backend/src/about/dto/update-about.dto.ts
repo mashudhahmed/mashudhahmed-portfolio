@@ -2,27 +2,34 @@ import { IsString, IsOptional, IsUrl } from 'class-validator';
 
 export class UpdateAboutDto {
   @IsString()
-  bio!: string;
+  @IsOptional()
+  bio?: string;
 
   @IsUrl()
   @IsOptional()
-  photoUrl!: string;
+  photoUrl?: string;
 
   @IsString()
-  education!: string;
+  @IsOptional()
+  education?: string;
 
   @IsString()
-  university!: string;
+  @IsOptional()
+  university?: string;
 
   @IsString()
-  major!: string;
+  @IsOptional()
+  major?: string;
 
   @IsString()
-  yearStart!: string;
+  @IsOptional()
+  yearStart?: string;
 
   @IsString()
-  yearEnd!: string;
+  @IsOptional()
+  yearEnd?: string;
 
   @IsString()
-  coursework!: string;
+  @IsOptional()
+  coursework?: string;
 }
