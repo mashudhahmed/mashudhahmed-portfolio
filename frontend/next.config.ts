@@ -17,6 +17,19 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.cloudinary.com',
       },
+      // ✅ Added for external avatar services
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com',
+      },
     ],
     minimumCacheTTL: 60,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
