@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next'; //  Optional but recommended
 import './globals.css';
 
 const inter = Inter({ 
@@ -59,13 +57,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={inter.className}>
         {children}
-        {/* ✅ Only include Analytics in production */}
-        {process.env.NODE_ENV === 'production' && (
-          <>
-            <Analytics />
-            <SpeedInsights />
-          </>
-        )}
       </body>
     </html>
   );
