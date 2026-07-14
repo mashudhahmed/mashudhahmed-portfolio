@@ -17,14 +17,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.cloudinary.com',
       },
-      // ✅ Added for external avatar services
+      // ✅ If you use external avatar services
       {
         protocol: 'https',
         hostname: 'i.pravatar.cc',
-      },
-      {
-        protocol: 'https',
-        hostname: 'api.dicebear.com',
       },
       {
         protocol: 'https',

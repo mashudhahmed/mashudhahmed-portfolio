@@ -94,7 +94,9 @@ export interface AboutData {
 
 export const fallbackAbout: AboutData = {
   bio: "I'm a passionate CSE student majoring in Software Engineering. I build high‑performance web applications with Next.js, NestJS, and PostgreSQL. I love solving complex problems with clean, elegant code. This portfolio is powered by a full-stack architecture with a terminal-inspired UI.",
-  photoUrl: 'https://i.pravatar.cc/400?img=11',
+  photoUrl: '/your-photo.jpg', // ✅ Replace with your photo filename
+  // OR if using Cloudinary:
+  // photoUrl: 'https://res.cloudinary.com/your-cloud/image/upload/v123456/your-photo.jpg',
   education: "Bachelor of Science in Computer Science and Engineering",
   university: "American International University - Bangladesh",
   major: "Software Engineering",
