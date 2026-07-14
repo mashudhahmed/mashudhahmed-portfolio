@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
-    qualities: [75, 85],
+    qualities: [70, 80, 85],
     remotePatterns: [
       {
         protocol: 'https',
@@ -27,21 +27,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   
-  // ✅ Remove staticPageGenerationTimeout
-  // staticPageGenerationTimeout: 0, // REMOVE THIS
-  
-  // ✅ Keep cacheComponents disabled for build
-  // cacheComponents: true, // Keep commented out
-  
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
+    webVitalsAttribution: ['CLS', 'LCP'],
   },
   
   turbopack: {},
   
-  // ✅ Enable source maps for debugging
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
   
   async headers() {
     if (process.env.NODE_ENV === 'production') {

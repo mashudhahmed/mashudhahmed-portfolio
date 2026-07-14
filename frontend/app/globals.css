@@ -56,3 +56,157 @@
 /* hide scrollbar everywhere but keep scroll */
 ::-webkit-scrollbar { display: none; }
 * { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* ✅ Mobile-specific optimizations - Improves mobile performance without affecting accessibility */
+@media (max-width: 768px) {
+  /* Disable heavy animations on mobile */
+  .animate-float {
+    animation: none !important;
+  }
+  
+  /* Slower gradient animation on mobile */
+  .animate-gradient-x {
+    animation-duration: 8s !important;
+  }
+  
+  /* Reduce backdrop blur for better performance on mobile */
+  .glass-card {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+  
+  /* Disable floating particles on mobile */
+  .fixed.inset-0.pointer-events-none {
+    display: none !important;
+  }
+  
+  /* Optimize image rendering on mobile */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+  
+  /* Reduce hover effects on mobile */
+  .group:hover .group-hover\:scale-110 {
+    transform: scale(1.05) !important;
+  }
+  
+  /* Optimize transitions on mobile */
+  * {
+    transition-duration: 0.15s !important;
+  }
+  
+  /* Reduce glass card shadow complexity on mobile */
+  .glass-card {
+    box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+/* ✅ Reduce motion for users who prefer it - Accessibility best practice */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .animate-pulse {
+    animation: none !important;
+  }
+  
+  .animate-float {
+    animation: none !important;
+  }
+  
+  .animate-gradient-x {
+    animation: none !important;
+    background-size: 100% auto !important;
+  }
+  
+  /* Preserve accessibility for reduced motion users */
+  .glass-card {
+    transition: none !important;
+  }
+}
+
+/* ✅ Print styles - Clean print output */
+@media print {
+  .glass-card {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .text-gray-200, .text-gray-300, .text-gray-400 {
+    color: #333 !important;
+  }
+  
+  .text-green-400 {
+    color: #059669 !important;
+  }
+  
+  .bg-gradient-to-br, .bg-gradient-to-r {
+    background: none !important;
+  }
+  
+  .fixed {
+    display: none !important;
+  }
+  
+  .relative {
+    position: static !important;
+  }
+  
+  .glass-card:hover {
+    border-color: #ddd !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ✅ Dark mode optimizations (already using dark class) */
+.dark .glass-card {
+  background: rgba(10, 20, 15, 0.7);
+}
+
+/* ✅ Focus styles for keyboard navigation - Accessibility */
+*:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ✅ Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ✅ Prevent layout shifts from images */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ✅ Better font rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ✅ Selection color */
+::selection {
+  background: rgba(34, 197, 94, 0.3);
+  color: #34d399;
+}
+
+/* ✅ Improve loading performance */
+[data-next-image] {
+  background-color: rgba(0, 0, 0, 0.2);
+}

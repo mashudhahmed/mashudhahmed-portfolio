@@ -1,11 +1,10 @@
 'use client';
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense, useMemo, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 import ScrollReveal from './ScrollReveal';
 import ProjectGrid from './ProjectGrid';
 import { fallbackSkills } from '@/lib/fallbackData';
 
-// ✅ Lazy load SkillItem component (industry standard)
 const SkillItem = lazy(() => import('./SkillItem'));
 
 interface Skill {
@@ -36,37 +35,46 @@ export default function PortfolioContent({ projects }: PortfolioContentProps) {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSkills = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/skills`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.length > 0) {
-            setSkills(data);
-          } else {
-            setSkills(fallbackSkills as Skill[]);
-          }
+  // ✅ Memoize categories
+  const categories = useMemo(() => 
+    ['Frontend', 'Backend & DevOps', 'Database & Tools', 'Languages'],
+    []
+  );
+
+  // ✅ Memoize fetchSkills function
+  const fetchSkills = useCallback(async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/skills`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.length > 0) {
+          setSkills(data);
         } else {
           setSkills(fallbackSkills as Skill[]);
         }
-      } catch (error) {
-        console.error('Failed to fetch skills, using fallback:', error);
+      } else {
         setSkills(fallbackSkills as Skill[]);
-      } finally {
-        setLoading(false);
       }
-    };
-    fetchSkills();
+    } catch (error) {
+      console.error('Failed to fetch skills, using fallback:', error);
+      setSkills(fallbackSkills as Skill[]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const skillsByCategory = skills.reduce((acc, skill) => {
-    if (!acc[skill.category]) acc[skill.category] = [];
-    acc[skill.category].push(skill);
-    return acc;
-  }, {} as Record<string, Skill[]>);
+  useEffect(() => {
+    fetchSkills();
+  }, [fetchSkills]);
 
-  const categories = ['Frontend', 'Backend & DevOps', 'Database & Tools', 'Languages'];
+  // ✅ Memoize skillsByCategory to prevent unnecessary recalculations
+  const skillsByCategory = useMemo(() => {
+    return skills.reduce((acc, skill) => {
+      if (!acc[skill.category]) acc[skill.category] = [];
+      acc[skill.category].push(skill);
+      return acc;
+    }, {} as Record<string, Skill[]>);
+  }, [skills]);
 
   if (loading) {
     return (

@@ -9,20 +9,17 @@ const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA
 export default function ProjectCard({ project }: { project: Project }) {
   return (
     <div className="group relative bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/10 cursor-pointer border border-gray-700 hover:border-green-500/50">
-      {/* ✅ Optimized image section with proper alt text */}
       <div className="relative h-48 w-full overflow-hidden bg-gray-800">
         <Image
           src={project.imageUrl}
           alt={`${project.title} - ${project.technologies.join(', ')} project screenshot`}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          quality={75}
           loading="lazy"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          quality={70}
           placeholder="blur"
           blurDataURL={BLUR_DATA_URL}
         />
-        {/* Dark overlay - appears on hover */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
           <a
             href={project.githubUrl}
@@ -51,7 +48,6 @@ export default function ProjectCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-5">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-xl font-bold text-white line-clamp-1">{project.title}</h3>
@@ -62,7 +58,6 @@ export default function ProjectCard({ project }: { project: Project }) {
         </div>
         <p className="text-gray-300 text-sm line-clamp-2 mb-3">{project.description}</p>
 
-        {/* Tech tags */}
         <div className="flex flex-wrap gap-2">
           {project.technologies.slice(0, 3).map((tech: string) => (
             <span

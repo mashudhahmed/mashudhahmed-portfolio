@@ -1,6 +1,6 @@
+export const revalidate = 3600;
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
-export const revalidate = 0;
 
 import { Suspense } from 'react';
 import Image from 'next/image';
@@ -43,11 +43,11 @@ const socialIcons: Record<string, any> = {
   medium: FaMedium,
 };
 
-// ✅ Improved fetch functions with better error handling for Vercel
+// ✅ Updated fetch functions with ISR
 async function getProjects() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, { 
-      cache: 'no-store'
+      next: { revalidate: 3600, tags: ['projects'] }
     });
     if (!res.ok) return fallbackProjects;
     const data = await res.json();
@@ -61,7 +61,7 @@ async function getProjects() {
 async function getAbout() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/about`, { 
-      cache: 'no-store'
+      next: { revalidate: 3600, tags: ['about'] }
     });
     if (!res.ok) return fallbackAbout;
     const data = await res.json();
@@ -75,7 +75,7 @@ async function getAbout() {
 async function getContactInfo() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact-info`, { 
-      cache: 'no-store'
+      next: { revalidate: 3600, tags: ['contact'] }
     });
     if (!res.ok) return fallbackContact;
     const data = await res.json();
@@ -89,7 +89,7 @@ async function getContactInfo() {
 async function getSettings() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings`, { 
-      cache: 'no-store'
+      next: { revalidate: 3600, tags: ['settings'] }
     });
     if (!res.ok) return fallbackSettings;
     const data = await res.json();
@@ -103,7 +103,7 @@ async function getSettings() {
 async function getVisitorCount() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visitor`, { 
-      cache: 'no-store'
+      next: { revalidate: 3600, tags: ['visitor'] }
     });
     if (!res.ok) return { count: 0 };
     return res.json();
@@ -115,7 +115,7 @@ async function getVisitorCount() {
 async function getResume() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume`, { 
-      cache: 'no-store'
+      next: { revalidate: 3600, tags: ['resume'] }
     });
     if (res.ok) {
       return await res.json();
@@ -129,7 +129,7 @@ async function getResume() {
 async function getSocialLinks() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/social-links`, { 
-      cache: 'no-store'
+      next: { revalidate: 3600, tags: ['social'] }
     });
     if (!res.ok) return fallbackSocialLinks;
     const data = await res.json();
@@ -220,10 +220,10 @@ async function PageContent() {
                     src={about.photoUrl}
                     alt="Mashudh Ahmed - Full-Stack Developer"
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                     priority
+                    fetchPriority="high"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    quality={75}
+                    quality={80}
                     placeholder="blur"
                     blurDataURL={BLUR_DATA_URL}
                     suppressHydrationWarning
@@ -340,7 +340,6 @@ async function PageContent() {
 
       <TerminalButton />
 
-      {/* ✅ DYNAMIC FOOTER - Social links with accessibility attributes */}
       <footer className="relative z-10 border-t border-gray-800 py-10 text-center text-gray-500 text-sm">
         <div className="flex justify-center gap-6 mb-4 flex-wrap">
           {activeSocialLinks.length > 0 ? (
@@ -365,7 +364,6 @@ async function PageContent() {
               );
             })
           ) : (
-            // Fallback links with accessibility attributes
             <>
               <a 
                 href="https://github.com/mashudhahmed" 
