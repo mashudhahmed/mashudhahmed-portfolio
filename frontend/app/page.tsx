@@ -217,7 +217,7 @@ async function PageContent() {
                 
                 <div className="relative w-80 h-80 mx-auto rounded-2xl overflow-hidden border-4 border-green-500/50 shadow-2xl group">
                   <Image
-                    src={about.photoUrl || 'https://ui-avatars.com/api/?name=Mashudh+Ahmed&size=400&background=0D8ABC&color=fff&bold=true'}
+                    src={about.photoUrl}
                     alt="Mashudh Ahmed - Full-Stack Developer"
                     fill
                     priority
@@ -228,6 +228,7 @@ async function PageContent() {
                     placeholder="blur"
                     blurDataURL={BLUR_DATA_URL}
                     suppressHydrationWarning
+                    className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-3 right-3 z-10">
@@ -341,6 +342,7 @@ async function PageContent() {
 
       <TerminalButton />
 
+      {/* ✅ Fixed: Added aria-label to all social links */}
       <footer className="relative z-10 border-t border-gray-800 py-10 text-center text-gray-500 text-sm">
         <div className="flex justify-center gap-6 mb-4 flex-wrap">
           {activeSocialLinks.length > 0 ? (

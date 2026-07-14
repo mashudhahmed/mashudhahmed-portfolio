@@ -89,7 +89,6 @@ export default function SkillItem({ skill }: { skill: Skill }) {
       style={{ willChange: 'transform' }}
     >
       <div className="flex items-center gap-3 mb-1">
-        {/* ✅ Fixed: SVG icons with proper accessibility - icons are decorative */}
         <IconComponent 
           className="w-6 h-6" 
           style={{ color: iconColor }}

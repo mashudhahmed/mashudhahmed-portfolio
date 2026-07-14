@@ -29,7 +29,6 @@ export default function MapComponent({ center = [23.8103, 90.4125], zoom = 13 }:
     
     const loadMap = async () => {
       try {
-        // ✅ Clean up existing map instance
         if (mapInstanceRef.current) {
           mapInstanceRef.current.remove();
           mapInstanceRef.current = null;
@@ -38,7 +37,6 @@ export default function MapComponent({ center = [23.8103, 90.4125], zoom = 13 }:
         const L = (await import('leaflet')).default;
         await import('leaflet/dist/leaflet.css');
         
-        // ✅ Fix marker icons
         delete (L.Icon.Default.prototype as any)._getIconUrl;
         L.Icon.Default.mergeOptions({
           iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -46,7 +44,6 @@ export default function MapComponent({ center = [23.8103, 90.4125], zoom = 13 }:
           shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
         });
 
-        // ✅ Only initialize if container exists and no map instance
         if (mapContainerRef.current && !mapInstanceRef.current) {
           const map = L.map(mapContainerRef.current).setView(center, zoom);
           mapInstanceRef.current = map;
@@ -65,7 +62,6 @@ export default function MapComponent({ center = [23.8103, 90.4125], zoom = 13 }:
 
     loadMap();
 
-    // ✅ Cleanup on unmount
     return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();

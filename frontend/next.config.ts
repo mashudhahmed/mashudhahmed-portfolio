@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
-    qualities: [70, 75, 80, 85], // ✅ Added 75
+    qualities: [70, 75, 80, 85],
     remotePatterns: [
       {
         protocol: 'https',
@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
   
   turbopack: {},
   
-  productionBrowserSourceMaps: false,
+  productionBrowserSourceMaps: true,
   
   async headers() {
     if (process.env.NODE_ENV === 'production') {
