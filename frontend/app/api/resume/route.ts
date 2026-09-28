@@ -39,6 +39,51 @@ export async function GET(request: Request) {
 
   const fileName = sanitizeFilename(rawFileName);
 
+  // Health-check / verification mode for Admin Panel
+  if (searchParams.get('check') === 'true') {
+    if (targetUrl && (targetUrl.startsWith('http://') || targetUrl.startsWith('https://'))) {
+      try {
+        const testRes = await fetch(targetUrl, { method: 'GET' });
+        const cldError = testRes.headers.get('x-cld-error');
+        if (testRes.ok) {
+          return NextResponse.json({
+            ok: true,
+            status: 'valid',
+            httpCode: testRes.status,
+            size: testRes.headers.get('content-length'),
+            targetUrl,
+            fileName,
+          });
+        }
+        return NextResponse.json({
+          ok: false,
+          status: 'invalid',
+          httpCode: testRes.status,
+          error: cldError || `HTTP ${testRes.status}`,
+          targetUrl,
+          fileName,
+        });
+      } catch (err: any) {
+        return NextResponse.json({
+          ok: false,
+          status: 'error',
+          error: err.message,
+          targetUrl,
+          fileName,
+        });
+      }
+    }
+
+    return NextResponse.json({
+      ok: true,
+      status: 'valid',
+      httpCode: 200,
+      source: 'local',
+      targetUrl: targetUrl || '/resume.pdf',
+      fileName,
+    });
+  }
+
   const dispositionType = isView ? 'inline' : 'attachment';
 
   // 2. If targetUrl is an external link (Cloudinary, Drive, etc.), fetch and stream it

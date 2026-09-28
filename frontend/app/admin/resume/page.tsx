@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, FileText, Upload, Trash2, ExternalLink, Loader2, Download, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Save, FileText, Upload, Trash2, ExternalLink, Loader2, Download, CheckCircle2, AlertTriangle, X, RefreshCw } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
 import { useToast } from '@/components/Toast';
 import { adminFetch, revalidatePortfolio } from '@/lib/adminApi';
@@ -23,11 +23,43 @@ export default function AdminResume() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [manualUrl, setManualUrl] = useState('');
+  const [healthStatus, setHealthStatus] = useState<{
+    loading: boolean;
+    ok: boolean;
+    status: 'valid' | 'invalid' | 'unknown';
+    httpCode?: number;
+    size?: string;
+    error?: string;
+  }>({ loading: true, ok: true, status: 'unknown' });
+  const [dismissAlert, setDismissAlert] = useState(false);
   const { showToast } = useToast();
   const router = useRouter();
 
+  const checkHealth = async () => {
+    setHealthStatus((prev) => ({ ...prev, loading: true }));
+    try {
+      const res = await fetch('/api/resume?check=true', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        setHealthStatus({
+          loading: false,
+          ok: data.ok,
+          status: data.status,
+          httpCode: data.httpCode,
+          size: data.size,
+          error: data.error,
+        });
+      } else {
+        setHealthStatus({ loading: false, ok: false, status: 'invalid' });
+      }
+    } catch {
+      setHealthStatus({ loading: false, ok: true, status: 'unknown' });
+    }
+  };
+
   useEffect(() => {
     fetchResume();
+    checkHealth();
   }, []);
 
   const fetchResume = async () => {
@@ -212,30 +244,73 @@ export default function AdminResume() {
             </p>
           </div>
 
-          {/* Status banner */}
+          {/* Status banner with live verification pill */}
           {activeUrl && (
-            <div className="p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 space-y-1">
-              <p className="text-green-400 text-xs font-semibold flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Current Resume Target:
+            <div className="p-4 rounded-xl bg-gray-900/60 border border-gray-800 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-gray-300 text-xs font-semibold flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> Current Resume Target:
+                </p>
+
+                {/* Live verification status badge */}
+                <div className="flex items-center gap-2">
+                  {healthStatus.loading ? (
+                    <span className="text-[10px] text-gray-400 flex items-center gap-1 font-mono">
+                      <Loader2 className="w-3 h-3 animate-spin text-green-400" /> Verifying link...
+                    </span>
+                  ) : healthStatus.ok ? (
+                    <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30 flex items-center gap-1 font-mono shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+                      Live & Verified {healthStatus.size ? `(${Math.round(Number(healthStatus.size) / 1024)} KB)` : '(200 OK)'}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/30 flex items-center gap-1 font-mono shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>
+                      Access Blocked ({healthStatus.error || '401'})
+                    </span>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={checkHealth}
+                    title="Re-check link health"
+                    className="p-1 rounded text-gray-400 hover:text-white hover:bg-gray-800 transition cursor-pointer"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${healthStatus.loading ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-gray-300 text-xs font-mono break-all bg-black/40 p-2 rounded-lg border border-gray-800/80">
+                {activeUrl}
               </p>
-              <p className="text-gray-300 text-xs font-mono break-all">{activeUrl}</p>
+
               {resume.updatedAt && (
-                <p className="text-gray-500 text-[10px] pt-1">
+                <p className="text-gray-500 text-[10px]">
                   Last updated: {new Date(resume.updatedAt).toLocaleString()}
                 </p>
               )}
             </div>
           )}
 
-          {/* Cloudinary PDF ACL Warning */}
-          {activeUrl && activeUrl.includes('cloudinary.com') && activeUrl.toLowerCase().endsWith('.pdf') && (
-            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs space-y-2">
-              <div className="font-semibold flex items-center gap-2 text-amber-400">
+          {/* Conditional Dismissible Alert - ONLY displays if link actually fails health check */}
+          {!dismissAlert && !healthStatus.loading && !healthStatus.ok && activeUrl && (
+            <div className="relative p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs space-y-2 animate-fadeIn">
+              <button
+                type="button"
+                onClick={() => setDismissAlert(true)}
+                className="absolute top-3 right-3 text-amber-400/70 hover:text-amber-300 p-1 transition cursor-pointer"
+                title="Dismiss alert"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="font-semibold flex items-center gap-2 text-amber-400 pr-6">
                 <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                <span>Cloudinary PDF Security Alert</span>
+                <span>Cloud Provider Security Alert</span>
               </div>
               <p className="text-[11px] text-amber-200/90 leading-relaxed">
-                Cloudinary accounts by default block direct delivery of PDF files (<code className="text-amber-300 bg-amber-950/50 px-1 py-0.5 rounded">401 deny or ACL failure</code>), causing browsers to show <strong className="text-white">&ldquo;Failed to load PDF document&rdquo;</strong>.
+                Your remote URL returned <code className="text-amber-300 bg-amber-950/50 px-1 py-0.5 rounded">401 deny or ACL failure</code>. Cloudinary accounts block direct delivery of PDF files by default.
               </p>
               <div className="pt-1 flex flex-wrap items-center gap-2">
                 <button
@@ -243,20 +318,21 @@ export default function AdminResume() {
                   onClick={() => {
                     setManualUrl('/resume.pdf');
                     setResume({ ...resume, url: '/resume.pdf' });
-                    showToast('Switched to /resume.pdf. Click Save Changes below!', 'info');
+                    setDismissAlert(true);
+                    showToast('Switched to local /resume.pdf. Click Save Changes below!', 'info');
                   }}
                   className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-medium transition cursor-pointer flex items-center gap-1.5"
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  Use local /resume.pdf (Fixed & Recommended)
+                  Switch to /resume.pdf (Fixed & Guaranteed)
                 </button>
                 <a
                   href="https://cloudinary.com/console/settings/security"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] text-amber-400 underline hover:text-amber-300 flex items-center gap-1"
+                  className="text-[11px] text-amber-400 underline hover:text-amber-300"
                 >
-                  Enable PDF delivery in Cloudinary Settings ↗
+                  Cloudinary Security Settings ↗
                 </a>
               </div>
             </div>
