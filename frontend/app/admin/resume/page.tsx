@@ -260,22 +260,14 @@ export default function AdminResume() {
 
             <div className="p-6 rounded-xl bg-black/40 border border-gray-800/80 flex flex-col items-center justify-center gap-3">
               <a
-                href={activeUrl || '#'}
+                href="/api/resume"
                 target="_blank"
                 rel="noopener noreferrer"
-                download="Resume.pdf"
-                onClick={(e) => {
-                  if (!activeUrl) {
-                    e.preventDefault();
-                    showToast('Please configure a resume URL first', 'error');
-                  }
-                }}
-                className={`inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold text-sm shadow-lg shadow-orange-950/30 transition ${
-                  activeUrl ? 'hover:shadow-xl hover:-translate-y-0.5' : 'opacity-40 cursor-not-allowed'
-                }`}
+                download={resume.fileName || 'Mashudh_Ahmed_Resume.pdf'}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold text-sm shadow-lg shadow-orange-950/30 transition hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
               >
                 <Download className="w-4 h-4" />
-                Download Resume
+                Test Download Resume
               </a>
 
               {activeUrl ? (
