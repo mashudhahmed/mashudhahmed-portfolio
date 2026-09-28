@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, FileText, Upload, Trash2, ExternalLink, Loader2, Download, CheckCircle2 } from 'lucide-react';
+import { Save, FileText, Upload, Trash2, ExternalLink, Loader2, Download, CheckCircle2, AlertTriangle } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
 import { useToast } from '@/components/Toast';
 import { adminFetch, revalidatePortfolio } from '@/lib/adminApi';
@@ -193,6 +193,41 @@ export default function AdminResume() {
                   Last updated: {new Date(resume.updatedAt).toLocaleString()}
                 </p>
               )}
+            </div>
+          )}
+
+          {/* Cloudinary PDF ACL Warning */}
+          {activeUrl && activeUrl.includes('cloudinary.com') && activeUrl.toLowerCase().endsWith('.pdf') && (
+            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs space-y-2">
+              <div className="font-semibold flex items-center gap-2 text-amber-400">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                <span>Cloudinary PDF Security Alert</span>
+              </div>
+              <p className="text-[11px] text-amber-200/90 leading-relaxed">
+                Cloudinary accounts by default block direct delivery of PDF files (<code className="text-amber-300 bg-amber-950/50 px-1 py-0.5 rounded">401 deny or ACL failure</code>), causing browsers to show <strong className="text-white">&ldquo;Failed to load PDF document&rdquo;</strong>.
+              </p>
+              <div className="pt-1 flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setManualUrl('/resume.pdf');
+                    setResume({ ...resume, url: '/resume.pdf' });
+                    showToast('Switched to /resume.pdf. Click Save Changes below!', 'info');
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-medium transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Use local /resume.pdf (Fixed & Recommended)
+                </button>
+                <a
+                  href="https://cloudinary.com/console/settings/security"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-amber-400 underline hover:text-amber-300 flex items-center gap-1"
+                >
+                  Enable PDF delivery in Cloudinary Settings ↗
+                </a>
+              </div>
             </div>
           )}
 
