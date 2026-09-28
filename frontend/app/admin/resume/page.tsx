@@ -82,8 +82,12 @@ export default function AdminResume() {
     showToast('Resume cleared. Click Save to confirm.', 'info');
   };
 
-  const handlePdfUpload = (url: string) => {
-    setResume({ ...resume, url });
+  const handlePdfUpload = (url: string, uploadedName?: string) => {
+    setResume((prev) => ({
+      ...prev,
+      url,
+      fileName: prev.fileName && prev.fileName !== 'Resume.pdf' ? prev.fileName : (uploadedName || prev.fileName || 'Mashudh_Ahmed_Resume.pdf'),
+    }));
     setManualUrl(url);
   };
 
@@ -178,6 +182,33 @@ export default function AdminResume() {
             </div>
             <p className="text-gray-500 text-[11px] mt-1.5">
               Enter a cloud link (Google Drive, Cloudinary, Dropbox) or use <code className="text-green-400">/resume.pdf</code> for your local file in <code className="text-gray-400">public/resume.pdf</code>.
+            </p>
+          </div>
+
+          {/* Downloaded File Name Setting */}
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-xs font-medium text-gray-300 flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-green-400" />
+                Downloaded File Name
+              </label>
+              <button
+                type="button"
+                onClick={() => setResume({ ...resume, fileName: 'Mashudh_Ahmed_Resume.pdf' })}
+                className="text-xs text-green-400 hover:text-green-300 underline cursor-pointer font-mono"
+              >
+                Reset to default
+              </button>
+            </div>
+            <input
+              type="text"
+              value={resume.fileName || ''}
+              onChange={(e) => setResume({ ...resume, fileName: e.target.value })}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-gray-700 text-white text-sm focus:outline-none focus:ring-1 focus:ring-green-500 font-mono"
+              placeholder="e.g. Mashudh_Ahmed_Resume.pdf"
+            />
+            <p className="text-gray-500 text-[11px] mt-1.5">
+              Visitors will always download the file with this clean name on their devices, regardless of cloud storage URLs or random hashes.
             </p>
           </div>
 

@@ -1,7 +1,7 @@
-import { IsString, IsUrl, IsOptional } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 
 export class UpdateResumeDto {
-  @IsUrl()
+  @IsString()
   @IsOptional()
   url?: string;
 

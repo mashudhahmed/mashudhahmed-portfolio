@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Upload, X, Loader2, FileText, Link as LinkIcon, Check, AlertCircle } from 'lucide-react';
 
 interface ImageUploadProps {
-  onUpload: (url: string) => void;
+  onUpload: (url: string, fileName?: string) => void;
   currentImage?: string;
   folder?: string;
   accept?: string;
@@ -85,7 +85,7 @@ export default function ImageUpload({
       if (res.ok && data.secure_url) {
         setPreview(data.secure_url);
         setUrlInput(data.secure_url);
-        onUpload(data.secure_url);
+        onUpload(data.secure_url, file.name);
         setSuccessMsg(`Uploaded: ${file.name}`);
         setTimeout(() => setSuccessMsg(''), 4000);
       } else {
