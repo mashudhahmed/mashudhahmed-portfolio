@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 // Use require for compression
 const compression = require('compression');
@@ -14,6 +14,15 @@ async function bootstrap() {
   // Security & Performance middleware
   app.use(helmet());
   app.use(compression());
+
+  // Global validation pipe for strict DTO validation and data transformation
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: false,
+    }),
+  );
 
   // CORS configuration
   const corsOrigins = process.env.CORS_ORIGINS 

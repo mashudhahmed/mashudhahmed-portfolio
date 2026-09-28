@@ -11,12 +11,19 @@ export class ContactService {
   ) {}
 
   async sendMessage(name: string, email: string, message: string): Promise<Message> {
-    const msg = this.messageRepo.create({ name, email, message });
+    const msg = this.messageRepo.create({ name, email, message, isRead: false });
     return this.messageRepo.save(msg);
   }
 
   async findAll(): Promise<Message[]> {
     return this.messageRepo.find({ order: { receivedAt: 'DESC' } });
+  }
+
+  async toggleRead(id: number): Promise<Message> {
+    const message = await this.messageRepo.findOne({ where: { id } });
+    if (!message) throw new NotFoundException('Message not found');
+    message.isRead = !message.isRead;
+    return this.messageRepo.save(message);
   }
 
   async delete(id: number): Promise<void> {

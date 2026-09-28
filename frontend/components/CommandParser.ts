@@ -40,8 +40,18 @@ export async function parseCommand(input: string, visitorCount: number): Promise
     case 'system':
       return { type: 'list', content: [`OS: ${navigator.platform}`, `Browser: ${navigator.userAgent.split(' ').slice(-2,-1)[0]}`, `Time: ${new Date().toLocaleString()}`, `Visitor #: ${visitorCount}`] };
     case 'resume':
-      window.open('/resume.pdf', '_blank');
-      return { type: 'text', content: 'Downloading resume...' };
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume`);
+        if (res.ok) {
+          const data = await res.json();
+          window.open(data.url || '/resume.pdf', '_blank');
+        } else {
+          window.open('/resume.pdf', '_blank');
+        }
+      } catch {
+        window.open('/resume.pdf', '_blank');
+      }
+      return { type: 'text', content: 'Opening resume...' };
     case 'clear':
       return { type: 'clear', content: '' };
     default:

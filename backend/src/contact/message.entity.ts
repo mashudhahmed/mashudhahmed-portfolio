@@ -14,6 +14,9 @@ export class Message {
   @Column('text')
   message!: string;
 
+  @Column({ default: false })
+  isRead!: boolean;
+
   @CreateDateColumn()
   receivedAt!: Date;
 }

@@ -210,3 +210,71 @@ img {
 [data-next-image] {
   background-color: rgba(0, 0, 0, 0.2);
 }
+
+/* ==========================================================================
+   Leaflet Map Cyber Emerald Theme (Matches Portfolio Obsidian/Emerald UI)
+   ========================================================================== */
+.leaflet-container {
+  background-color: #070e0a !important;
+  font-family: 'JetBrains Mono', 'Inter', monospace, sans-serif !important;
+  outline: none !important;
+}
+
+/* Cyber Emerald Tile Filter - perfectly complements site #0a140f & emerald accents */
+.dark-map-tiles {
+  filter: invert(100%) hue-rotate(145deg) brightness(80%) contrast(135%) saturate(75%);
+}
+
+/* Modern Cyber Glassmorphic Popup */
+.leaflet-popup-content-wrapper {
+  background: rgba(10, 20, 15, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(34, 197, 94, 0.35) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.7), 0 0 15px rgba(34, 197, 94, 0.15) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(10, 20, 15, 0.95) !important;
+  border: 1px solid rgba(34, 197, 94, 0.35) !important;
+}
+
+.leaflet-popup-close-button {
+  color: #64748b !important;
+  padding: 6px 8px !important;
+  transition: color 0.15s ease !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: #ef4444 !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 14px !important;
+  line-height: 1.4 !important;
+}
+
+/* Attribution text styled as a terminal footer */
+.leaflet-control-attribution {
+  background: rgba(7, 14, 10, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  color: #475569 !important;
+  font-size: 9px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  border-top-left-radius: 6px;
+  padding: 2px 6px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leaflet-control-attribution a {
+  color: #22c55e !important;
+  text-decoration: none !important;
+}
+
+.leaflet-control-attribution a:hover {
+  text-decoration: underline !important;
+}

@@ -38,15 +38,17 @@ import { Resume } from './resume/resume.entity';
         PORT: Joi.number().default(4000),
         DATABASE_URL: Joi.string().required(),
         ADMIN_TOKEN: Joi.string().min(6).required(),
+        JWT_SECRET: Joi.string().optional(),
+        JWT_EXPIRES_IN: Joi.string().default('7d'),
         CORS_ORIGINS: Joi.string().optional(),
       }),
       validationOptions: { abortEarly: true },
     }),
     
-    // Rate limiting
+    // Rate limiting (60 requests per minute)
     ThrottlerModule.forRoot([{
       ttl: 60000,
-      limit: 10,
+      limit: 60,
     }]),
     
     // Database

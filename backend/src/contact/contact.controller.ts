@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Patch, Body, Param, UseGuards } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { ContactService } from './contact.service';
 import { AdminGuard } from '../admin/admin.guard';
@@ -8,11 +8,11 @@ export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
   @Post()
-  @Throttle({ default: { limit: 3, ttl: 60000 } }) // Only 3 messages per minute
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 messages per minute
   async submit(@Body() body: { name: string; email: string; message: string }) {
     // Basic validation
-    if (!body.message || body.message.length < 10) {
-      throw new Error('Message must be at least 10 characters');
+    if (!body.message || body.message.length < 5) {
+      throw new Error('Message must be at least 5 characters');
     }
     if (!body.name || body.name.length < 2) {
       throw new Error('Name must be at least 2 characters');
@@ -27,6 +27,12 @@ export class ContactController {
   @UseGuards(AdminGuard)
   async getAllMessages() {
     return this.contactService.findAll();
+  }
+
+  @Patch(':id/read')
+  @UseGuards(AdminGuard)
+  async toggleMessageRead(@Param('id') id: string) {
+    return this.contactService.toggleRead(+id);
   }
 
   @Delete(':id')

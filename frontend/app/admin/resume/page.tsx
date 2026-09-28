@@ -1,8 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, RefreshCw, CheckCircle, AlertCircle, FileText, Upload, Trash2, ExternalLink } from 'lucide-react';
+import { Save, FileText, Upload, Trash2, ExternalLink, Loader2, Download, CheckCircle2 } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
+import { useToast } from '@/components/Toast';
+import { adminFetch, revalidatePortfolio } from '@/lib/adminApi';
 
 interface ResumeData {
   id: number;
@@ -20,31 +22,23 @@ export default function AdminResume() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [manualUrl, setManualUrl] = useState('');
+  const { showToast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-      router.push('/admin/login');
-      return;
-    }
-    fetchResume(token);
-  }, [router]);
+    fetchResume();
+  }, []);
 
-  const fetchResume = async (token: string) => {
+  const fetchResume = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
+      const data = await adminFetch<ResumeData>('/resume');
+      if (data) {
         setResume(data);
-        setManualUrl(data.url);
+        setManualUrl(data.url || '');
       }
-    } catch (error) {
-      console.error('Failed to fetch resume:', error);
+    } catch (error: any) {
+      showToast(error.message || 'Failed to fetch current resume', 'error');
     } finally {
       setLoading(false);
     }
@@ -52,53 +46,40 @@ export default function AdminResume() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const urlToSave = manualUrl || resume.url;
-    
+
+    const urlToSave = (manualUrl || resume.url || '').trim();
+
     if (!urlToSave) {
-      alert('Please upload a resume file or enter a URL');
+      showToast('Please upload a resume file or enter a valid URL / path', 'error');
       return;
     }
-    
+
     setSaving(true);
-    setSaveStatus('idle');
-    const token = localStorage.getItem('adminToken');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume`, {
+      const data = await adminFetch<ResumeData>('/resume', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ 
-          url: urlToSave, 
-          fileName: 'Resume.pdf'
+        body: JSON.stringify({
+          url: urlToSave,
+          fileName: resume.fileName || 'Resume.pdf',
         }),
       });
 
-      if (res.ok) {
-        setSaveStatus('success');
-        setResume({ ...resume, url: urlToSave, fileName: 'Resume.pdf' });
-        setTimeout(() => setSaveStatus('idle'), 2000);
-      } else {
-        setSaveStatus('error');
-        setTimeout(() => setSaveStatus('idle'), 2000);
-      }
-    } catch (error) {
-      console.error('Failed to save resume:', error);
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus('idle'), 2000);
+      setResume(data);
+      setManualUrl(data.url);
+      showToast('Resume saved successfully', 'success');
+      await revalidatePortfolio(['resume']);
+    } catch (error: any) {
+      showToast(error.message || 'Failed to save resume', 'error');
     } finally {
       setSaving(false);
     }
   };
 
   const handleClearResume = () => {
-    if (confirm('Are you sure you want to clear the resume?')) {
-      setManualUrl('');
-      setResume({ ...resume, url: '', fileName: 'Resume.pdf' });
-    }
+    setManualUrl('');
+    setResume({ ...resume, url: '' });
+    showToast('Resume cleared. Click Save to confirm.', 'info');
   };
 
   const handlePdfUpload = (url: string) => {
@@ -109,207 +90,178 @@ export default function AdminResume() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        <Loader2 className="w-8 h-8 text-green-400 animate-spin" />
       </div>
     );
   }
 
+  const activeUrl = manualUrl || resume.url;
+
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Resume / CV</h1>
-          <p className="text-gray-400 mt-1">Manage your downloadable resume</p>
+          <h1 className="text-3xl font-bold text-white tracking-tight">Resume / CV</h1>
+          <p className="text-gray-400 mt-1 text-sm">Manage your downloadable resume and direct document links</p>
         </div>
-        {saveStatus === 'success' && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/20 text-green-400 text-sm">
-            <CheckCircle className="w-3 h-3" />
-            Resume saved successfully
-          </div>
-        )}
-        {saveStatus === 'error' && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/20 text-red-400 text-sm">
-            <AlertCircle className="w-3 h-3" />
-            Error saving resume
-          </div>
-        )}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* Left Column - Upload Form */}
-        <div>
-          <form onSubmit={handleSubmit} className="glass-card p-6 space-y-6">
-            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-green-400" />
-              Resume Settings
-            </h2>
+      <div className="grid lg:grid-cols-2 gap-8 items-start">
+        {/* Left Column - Form */}
+        <form onSubmit={handleSubmit} className="glass-card p-6 space-y-6 border border-gray-800 rounded-2xl">
+          <h2 className="text-lg font-bold text-white pb-3 border-b border-gray-800 flex items-center gap-2">
+            <FileText className="w-4 h-4 text-green-400" />
+            Resume Settings
+          </h2>
 
-            {/* Method 1: Upload PDF via Cloudinary */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                <Upload className="w-4 h-4 inline mr-2 text-green-400" />
-                Method 1: Upload PDF File
+          {/* Cloudinary Uploader */}
+          <div>
+            <label className="block text-xs font-medium text-gray-300 mb-2 flex items-center gap-2">
+              <Upload className="w-3.5 h-3.5 text-green-400" />
+              Method 1: Upload PDF File
+            </label>
+            <ImageUpload
+              onUpload={handlePdfUpload}
+              currentImage={resume.url}
+              folder="resume"
+              accept="application/pdf"
+              label="Upload PDF Document"
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-800"></div>
+            </div>
+            <div className="relative flex justify-center text-[10px] uppercase font-mono">
+              <span className="px-3 bg-gray-900 text-gray-500">OR DIRECT LINK</span>
+            </div>
+          </div>
+
+          {/* Manual URL / Local Path */}
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-xs font-medium text-gray-300 flex items-center gap-1.5">
+                <ExternalLink className="w-3.5 h-3.5 text-green-400" />
+                Method 2: Direct URL or Local File
               </label>
-              <ImageUpload
-                onUpload={handlePdfUpload}
-                currentImage={resume.url}
-                folder="resume"
-                accept="application/pdf"
-                label="Upload PDF"
+              <button
+                type="button"
+                onClick={() => {
+                  setManualUrl('/resume.pdf');
+                  setResume({ ...resume, url: '/resume.pdf' });
+                }}
+                className="text-xs text-green-400 hover:text-green-300 underline cursor-pointer"
+              >
+                Use local /resume.pdf
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={manualUrl}
+                onChange={(e) => setManualUrl(e.target.value)}
+                className="flex-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-gray-700 text-white text-sm focus:outline-none focus:ring-1 focus:ring-green-500"
+                placeholder="https://... or /resume.pdf"
               />
-              <p className="text-gray-500 text-xs mt-2">
-                Upload your resume as PDF. Cloudinary will host it automatically.
-              </p>
-            </div>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-gray-900 text-gray-500">OR</span>
-              </div>
-            </div>
-
-            {/* Method 2: Manual URL Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                <ExternalLink className="w-4 h-4 inline mr-2 text-green-400" />
-                Method 2: Enter URL Manually
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="url"
-                  value={manualUrl}
-                  onChange={(e) => setManualUrl(e.target.value)}
-                  className="flex-1 px-4 py-2 rounded-lg bg-black/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="https://example.com/resume.pdf"
-                />
-                {manualUrl && (
-                  <button
-                    type="button"
-                    onClick={handleClearResume}
-                    className="px-3 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
-              <p className="text-gray-500 text-xs mt-2">
-                Paste a direct link to your resume (Google Drive, Dropbox, Cloudinary, etc.)
-              </p>
-            </div>
-
-            {/* Current Resume Display */}
-            {(resume.url || manualUrl) && (
-              <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
-                <p className="text-green-400 text-xs mb-1">✓ Current Resume URL:</p>
-                <p className="text-gray-300 text-xs break-all">{manualUrl || resume.url}</p>
-                {resume.updatedAt && (
-                  <p className="text-gray-500 text-xs mt-2">
-                    Last updated: {new Date(resume.updatedAt).toLocaleString()}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/* Save Button */}
-            <button
-              type="submit"
-              disabled={saving}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {saving ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  Save Changes
-                </>
+              {manualUrl && (
+                <button
+                  type="button"
+                  onClick={handleClearResume}
+                  className="px-3 py-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition cursor-pointer"
+                  title="Clear"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               )}
-            </button>
-          </form>
-        </div>
-
-        {/* Right Column - Preview & Instructions */}
-        <div>
-          <h2 className="text-xl font-semibold text-white mb-4">Live Preview</h2>
-          
-          {/* Preview Card */}
-          <div className="glass-card p-6 mb-6">
-            <div className="space-y-4">
-              <div className="p-4 rounded-lg bg-white/5">
-                <p className="text-gray-400 text-sm mb-3">Resume button on your portfolio will look like:</p>
-                <div className="flex justify-center">
-                  <a
-                    href={manualUrl || resume.url || '#'}
-                    download
-                    className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold transition ${
-                      (manualUrl || resume.url) ? 'hover:shadow-lg hover:-translate-y-0.5' : 'opacity-50 cursor-not-allowed'
-                    }`}
-                    onClick={(e) => {
-                      if (!manualUrl && !resume.url) {
-                        e.preventDefault();
-                        alert('Please upload a resume first');
-                      }
-                    }}
-                  >
-                    <Upload className="w-4 h-4" />
-                    Download Resume
-                  </a>
-                </div>
-                {(!manualUrl && !resume.url) && (
-                  <p className="text-yellow-400 text-xs text-center mt-3">
-                    ⚠️ No resume configured. Upload a file or enter a URL above.
-                  </p>
-                )}
-                {(manualUrl || resume.url) && (
-                  <p className="text-green-400 text-xs text-center mt-3">
-                    ✓ Resume is ready for download
-                  </p>
-                )}
-              </div>
             </div>
-          </div>
-
-          {/* Instructions Card */}
-          <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">📋 Instructions</h3>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs font-bold">1</div>
-                <p className="text-gray-300 text-sm">Upload your resume PDF using the Cloudinary uploader above</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs font-bold">2</div>
-                <p className="text-gray-300 text-sm">Or paste any direct PDF URL (Google Drive, Dropbox, etc.)</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs font-bold">3</div>
-                <p className="text-gray-300 text-sm">Click "Save Changes" to update your portfolio</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs font-bold">4</div>
-                <p className="text-gray-300 text-sm">Visitors can download your resume from the homepage</p>
-              </div>
-            </div>
-
-            <div className="mt-6 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
-              <p className="text-blue-400 text-xs">
-                💡 <span className="text-gray-300">Pro tip:</span> Use a professional filename and keep your resume updated regularly!
-              </p>
-            </div>
-          </div>
-
-          {/* Support Card */}
-          <div className="mt-6 p-4 rounded-lg bg-gray-800/50">
-            <p className="text-gray-400 text-xs text-center">
-              Supported formats: PDF (recommended) • Max file size: 10MB • Hosted on Cloudinary
+            <p className="text-gray-500 text-[11px] mt-1.5">
+              Enter a cloud link (Google Drive, Cloudinary, Dropbox) or use <code className="text-green-400">/resume.pdf</code> for your local file in <code className="text-gray-400">public/resume.pdf</code>.
             </p>
+          </div>
+
+          {/* Status banner */}
+          {activeUrl && (
+            <div className="p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 space-y-1">
+              <p className="text-green-400 text-xs font-semibold flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Current Resume Target:
+              </p>
+              <p className="text-gray-300 text-xs font-mono break-all">{activeUrl}</p>
+              {resume.updatedAt && (
+                <p className="text-gray-500 text-[10px] pt-1">
+                  Last updated: {new Date(resume.updatedAt).toLocaleString()}
+                </p>
+              )}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={saving}
+            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white text-sm font-semibold hover:shadow-lg transition disabled:opacity-50 cursor-pointer pt-3"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Saving Resume...</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>Save Changes</span>
+              </>
+            )}
+          </button>
+        </form>
+
+        {/* Right Column - Live Preview */}
+        <div className="space-y-6 sticky top-6">
+          <div className="glass-card p-6 border border-gray-800 rounded-2xl space-y-4">
+            <h2 className="text-base font-bold text-white pb-2 border-b border-gray-800">Homepage Preview</h2>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              How the resume download button functions on your live portfolio:
+            </p>
+
+            <div className="p-6 rounded-xl bg-black/40 border border-gray-800/80 flex flex-col items-center justify-center gap-3">
+              <a
+                href={activeUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                download="Resume.pdf"
+                onClick={(e) => {
+                  if (!activeUrl) {
+                    e.preventDefault();
+                    showToast('Please configure a resume URL first', 'error');
+                  }
+                }}
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold text-sm shadow-lg shadow-orange-950/30 transition ${
+                  activeUrl ? 'hover:shadow-xl hover:-translate-y-0.5' : 'opacity-40 cursor-not-allowed'
+                }`}
+              >
+                <Download className="w-4 h-4" />
+                Download Resume
+              </a>
+
+              {activeUrl ? (
+                <span className="text-green-400 text-xs flex items-center gap-1">
+                  ✓ Ready for visitor download
+                </span>
+              ) : (
+                <span className="text-yellow-400 text-xs">
+                  ⚠️ No resume URL configured
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-xs text-gray-400 space-y-2">
+            <p className="font-semibold text-white">💡 Tips for Resume Hosting:</p>
+            <ul className="list-disc list-inside space-y-1 text-gray-400">
+              <li>Keep file size under 10MB for quick mobile downloads.</li>
+              <li>If using Cloudinary, ensure PDF delivery is enabled in Security settings.</li>
+              <li>Or simply place your file in <code className="text-green-400">public/resume.pdf</code> and use <code className="text-green-400">/resume.pdf</code>.</li>
+            </ul>
           </div>
         </div>
       </div>

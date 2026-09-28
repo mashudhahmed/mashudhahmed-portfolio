@@ -67,13 +67,15 @@ export default function PortfolioContent({ projects }: PortfolioContentProps) {
     fetchSkills();
   }, [fetchSkills]);
 
-  // ✅ Memoize skillsByCategory to prevent unnecessary recalculations
+  // ✅ Memoize skillsByCategory to filter active skills only
   const skillsByCategory = useMemo(() => {
-    return skills.reduce((acc, skill) => {
-      if (!acc[skill.category]) acc[skill.category] = [];
-      acc[skill.category].push(skill);
-      return acc;
-    }, {} as Record<string, Skill[]>);
+    return skills
+      .filter((skill) => skill.isActive !== false)
+      .reduce((acc, skill) => {
+        if (!acc[skill.category]) acc[skill.category] = [];
+        acc[skill.category].push(skill);
+        return acc;
+      }, {} as Record<string, Skill[]>);
   }, [skills]);
 
   if (loading) {

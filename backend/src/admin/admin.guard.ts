@@ -1,9 +1,13 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
-  constructor(private config: ConfigService) {}
+  constructor(
+    private config: ConfigService,
+    private jwtService: JwtService,
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
@@ -11,11 +15,26 @@ export class AdminGuard implements CanActivate {
     if (!authHeader) throw new UnauthorizedException('Missing authorization header');
 
     const [type, token] = authHeader.split(' ');
-    if (type !== 'Bearer') throw new UnauthorizedException('Invalid token type');
+    if (type !== 'Bearer' || !token) throw new UnauthorizedException('Invalid token format');
 
-    const expectedToken = this.config.get('ADMIN_TOKEN');
-    if (!expectedToken || token !== expectedToken) throw new UnauthorizedException('Invalid token');
+    const expectedToken = this.config.get<string>('ADMIN_TOKEN');
 
-    return true;
+    // 1. Backward-compatibility: Allow direct raw ADMIN_TOKEN
+    if (expectedToken && token === expectedToken) {
+      request.user = { role: 'admin', type: 'master_key' };
+      return true;
+    }
+
+    // 2. Standard production path: Cryptographically verify signed JWT
+    try {
+      const payload = this.jwtService.verify(token);
+      request.user = payload;
+      return true;
+    } catch (err: any) {
+      if (err.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Session expired. Please log in again.');
+      }
+      throw new UnauthorizedException('Invalid authentication token');
+    }
   }
 }

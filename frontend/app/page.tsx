@@ -197,7 +197,9 @@ async function PageContent() {
             </a>
             <a 
               href={resume.url} 
-              download 
+              target="_blank"
+              rel="noopener noreferrer"
+              download="Resume.pdf"
               className="px-8 py-3 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold shadow-lg hover:shadow-orange-500/25 hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 inline-flex items-center gap-2"
             >
               <Download className="w-5 h-5" />
