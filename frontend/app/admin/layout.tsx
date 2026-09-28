@@ -17,6 +17,7 @@ import {
   ExternalLink,
   Menu,
   X,
+  Briefcase,
 } from 'lucide-react';
 import { ToastProvider } from '@/components/Toast';
 
@@ -24,6 +25,7 @@ const navItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Projects', href: '/admin/projects', icon: FolderGit2 },
   { name: 'Skills', href: '/admin/skills', icon: Code2 },
+  { name: 'Experience', href: '/admin/experience', icon: Briefcase },
   { name: 'About', href: '/admin/about', icon: User },
   { name: 'Contact Info', href: '/admin/contact', icon: Mail },
   { name: 'Messages', href: '/admin/messages', icon: MessageSquare },

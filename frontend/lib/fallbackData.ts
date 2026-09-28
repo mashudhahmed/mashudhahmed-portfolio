@@ -148,6 +148,57 @@ export const fallbackSocialLinks: SocialLink[] = [
   { id: 3, platform: "email", url: "mailto:mashudh.ahmed@outlook.com", isActive: true },
 ];
 
+export interface Experience {
+  id: number;
+  company: string;
+  position: string;
+  companyLogo?: string;
+  companyUrl?: string;
+  employmentType: string;
+  location: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent: boolean;
+  description: string;
+  technologies: string[];
+  order: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const fallbackExperiences: Experience[] = [
+  {
+    id: 1,
+    company: "Techneea",
+    position: "Full-Stack Software Engineer",
+    companyLogo: "",
+    companyUrl: "https://techneea.com",
+    employmentType: "Full-time",
+    location: "Dhaka, Bangladesh",
+    startDate: "2024",
+    endDate: "Present",
+    isCurrent: true,
+    description: "Architected and delivered scalable web applications with Next.js, NestJS, and PostgreSQL. Designed robust RESTful APIs, JWT authentication, and high-performance server-side rendering pipelines.",
+    technologies: ["Next.js", "TypeScript", "NestJS", "PostgreSQL", "Docker", "Tailwind CSS"],
+    order: 1,
+  },
+  {
+    id: 2,
+    company: "Freelance / Open Source",
+    position: "Full-Stack Developer",
+    companyLogo: "",
+    companyUrl: "https://github.com/mashudhahmed",
+    employmentType: "Freelance",
+    location: "Remote",
+    startDate: "2023",
+    endDate: "2024",
+    isCurrent: false,
+    description: "Developed custom web and mobile solutions for clients. Integrated payment systems, cloud storage, real-time databases, and responsive terminal-inspired user interfaces.",
+    technologies: ["React", "Node.js", "PostgreSQL", "Kotlin", "Firebase"],
+    order: 2,
+  },
+];
+
 // Helper function to fetch with fallback (industry standard)
 export async function fetchWithFallback<T>(
   url: string, 

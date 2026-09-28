@@ -19,12 +19,14 @@ import CountUp from '@/components/CountUp';
 import MapWrapper from '@/components/MapWrapper';
 import { Download, Calendar, GraduationCap, Award, Mail, MapPin, Clock, Zap } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaEnvelope, FaTwitter, FaInstagram, FaYoutube, FaDiscord, FaDev, FaMedium } from 'react-icons/fa';
+import ExperienceSection from '@/components/ExperienceSection';
 import {
   fallbackProjects,
   fallbackAbout,
   fallbackContact,
   fallbackSettings,
   fallbackSocialLinks,
+  fallbackExperiences,
 } from '@/lib/fallbackData';
 
 // ✅ Industry standard blur placeholder for hero image
@@ -69,6 +71,20 @@ async function getAbout() {
   } catch (error) {
     console.error('Failed to fetch about:', error);
     return fallbackAbout;
+  }
+}
+
+async function getExperiences() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/experience`, { 
+      next: { revalidate: 3600, tags: ['experience'] }
+    });
+    if (!res.ok) return fallbackExperiences;
+    const data = await res.json();
+    return Array.isArray(data) && data.length > 0 ? data : fallbackExperiences;
+  } catch (error) {
+    console.error('Failed to fetch experience:', error);
+    return fallbackExperiences;
   }
 }
 
@@ -155,9 +171,10 @@ export default function Home() {
 
 // ✅ PageContent component with all data fetching
 async function PageContent() {
-  const [projects, about, contactInfo, settings, visitorData, resume, socialLinks] = await Promise.all([
+  const [projects, about, experiences, contactInfo, settings, visitorData, resume, socialLinks] = await Promise.all([
     getProjects(),
     getAbout(),
+    getExperiences(),
     getContactInfo(),
     getSettings(),
     getVisitorCount(),
@@ -290,6 +307,9 @@ async function PageContent() {
           </div>
         </section>
       </ScrollReveal>
+ 
+      {/* Experience Section */}
+      <ExperienceSection experiences={experiences} />
 
       <PortfolioContent projects={projects} />
 

@@ -16,6 +16,7 @@ import { StatsModule } from './stats/stats.module';
 import { HealthModule } from './health/health.module';
 import { ResumeModule } from './resume/resume.module';
 import { ContactModule } from './contact/contact.module';
+import { ExperienceModule } from './experience/experience.module';
 import { CommonModule } from './common/common.module';
 import { CacheInterceptor } from './common/interceptors/cache.interceptor';
 import { Project } from './projects/project.entity';
@@ -27,6 +28,7 @@ import { SocialLink } from './social/social.entity';
 import { Setting } from './settings/setting.entity';
 import { Message } from './contact/message.entity';
 import { Resume } from './resume/resume.entity';
+import { Experience } from './experience/experience.entity';
 
 @Module({
   imports: [
@@ -58,7 +60,7 @@ import { Resume } from './resume/resume.entity';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         url: config.get('DATABASE_URL'),
-        entities: [Project, Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message, Resume],
+        entities: [Project, Visitor, Skill, About, ContactInfo, SocialLink, Setting, Message, Resume, Experience],
         synchronize: config.get('DB_SYNCHRONIZE') !== 'false',
         ssl: config.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
       }),
@@ -78,6 +80,7 @@ import { Resume } from './resume/resume.entity';
     ContactModule,
     HealthModule,
     ResumeModule,
+    ExperienceModule,
   ],
   providers: [
     {
