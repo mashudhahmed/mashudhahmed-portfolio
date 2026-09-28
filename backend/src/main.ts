@@ -26,7 +26,7 @@ async function bootstrap() {
 
   // CORS configuration
   const corsOrigins = process.env.CORS_ORIGINS 
-    ? process.env.CORS_ORIGINS.split(',')
+    ? process.env.CORS_ORIGINS.split(',').map((o) => o.trim())
     : ['http://localhost:3000', 'https://mashudhahmed.vercel.app'];
   
   app.enableCors({

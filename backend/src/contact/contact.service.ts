@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from './message.entity';
 
 @Injectable()
 export class ContactService {
+  private readonly logger = new Logger(ContactService.name);
+
   constructor(
     @InjectRepository(Message)
     private messageRepo: Repository<Message>,
@@ -16,7 +18,12 @@ export class ContactService {
   }
 
   async findAll(): Promise<Message[]> {
-    return this.messageRepo.find({ order: { receivedAt: 'DESC' } });
+    try {
+      return await this.messageRepo.find({ order: { receivedAt: 'DESC' } });
+    } catch (error) {
+      this.logger.error('Failed to query messages from database', error);
+      return [];
+    }
   }
 
   async toggleRead(id: number): Promise<Message> {

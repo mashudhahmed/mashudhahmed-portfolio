@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { About } from './about.entity';
@@ -6,15 +6,35 @@ import { UpdateAboutDto } from './dto/update-about.dto';
 
 @Injectable()
 export class AboutService {
+  private readonly logger = new Logger(AboutService.name);
+
   constructor(
     @InjectRepository(About)
     private aboutRepo: Repository<About>,
   ) {}
 
   async getAbout(): Promise<About> {
-    let about = await this.aboutRepo.findOne({ where: { id: 1 } });
-    if (!about) {
-      about = this.aboutRepo.create({
+    try {
+      let about = await this.aboutRepo.findOne({ where: { id: 1 } });
+      if (!about) {
+        about = this.aboutRepo.create({
+          bio: "I'm a passionate CSE student majoring in Software Engineering. I build high‑performance web applications with Next.js, NestJS, and PostgreSQL. I love solving complex problems with clean, elegant code. This portfolio is powered by a full-stack architecture with a terminal-inspired UI.",
+          photoUrl: '/your-photo.jpg',
+          education: 'Bachelor of Science in Computer Science and Engineering',
+          university: 'American International University - Bangladesh',
+          major: 'Software Engineering',
+          yearStart: '2022',
+          yearEnd: '2026',
+          coursework: 'Data Structures, Algorithms, Advanced Programming in Web Technology, Mobile Application Development, Software Requirement Engineering, Advanced Database Management System',
+        });
+        await this.aboutRepo.save(about);
+        return about;
+      }
+      return about;
+    } catch (error) {
+      this.logger.error('Failed to get about from database, using fallback', error);
+      return {
+        id: 1,
         bio: "I'm a passionate CSE student majoring in Software Engineering. I build high‑performance web applications with Next.js, NestJS, and PostgreSQL. I love solving complex problems with clean, elegant code. This portfolio is powered by a full-stack architecture with a terminal-inspired UI.",
         photoUrl: '/your-photo.jpg',
         education: 'Bachelor of Science in Computer Science and Engineering',
@@ -23,11 +43,9 @@ export class AboutService {
         yearStart: '2022',
         yearEnd: '2026',
         coursework: 'Data Structures, Algorithms, Advanced Programming in Web Technology, Mobile Application Development, Software Requirement Engineering, Advanced Database Management System',
-      });
-      await this.aboutRepo.save(about);
-      return about;
+        updatedAt: new Date(),
+      };
     }
-    return about;
   }
 
   async updateAbout(dto: UpdateAboutDto): Promise<About> {

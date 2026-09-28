@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Resume } from './resume.entity';
@@ -6,21 +6,33 @@ import { UpdateResumeDto } from './update-resume.dto';
 
 @Injectable()
 export class ResumeService {
+  private readonly logger = new Logger(ResumeService.name);
+
   constructor(
     @InjectRepository(Resume)
     private resumeRepo: Repository<Resume>,
   ) {}
 
   async getResume(): Promise<Resume> {
-    let resume = await this.resumeRepo.findOne({ where: { id: 1 } });
-    if (!resume) {
-      resume = this.resumeRepo.create({
+    try {
+      let resume = await this.resumeRepo.findOne({ where: { id: 1 } });
+      if (!resume) {
+        resume = this.resumeRepo.create({
+          url: '/resume.pdf',
+          fileName: 'Mashudh_Ahmed_Resume.pdf',
+        });
+        await this.resumeRepo.save(resume);
+      }
+      return resume;
+    } catch (error) {
+      this.logger.error('Failed to get resume from database, using fallback', error);
+      return {
+        id: 1,
         url: '/resume.pdf',
         fileName: 'Mashudh_Ahmed_Resume.pdf',
-      });
-      await this.resumeRepo.save(resume);
+        updatedAt: new Date(),
+      };
     }
-    return resume;
   }
 
   async updateResume(dto: UpdateResumeDto): Promise<Resume> {
