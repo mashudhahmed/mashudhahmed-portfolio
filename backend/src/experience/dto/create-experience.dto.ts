@@ -26,8 +26,8 @@ export class CreateExperienceDto {
   location?: string;
 
   @IsString()
-  @IsNotEmpty()
-  startDate!: string;
+  @IsOptional()
+  startDate?: string;
 
   @IsString()
   @IsOptional()
@@ -38,8 +38,8 @@ export class CreateExperienceDto {
   isCurrent?: boolean;
 
   @IsString()
-  @IsNotEmpty()
-  description!: string;
+  @IsOptional()
+  description?: string;
 
   @IsArray()
   @IsString({ each: true })

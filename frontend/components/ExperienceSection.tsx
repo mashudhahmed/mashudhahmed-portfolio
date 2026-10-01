@@ -117,12 +117,18 @@ export default function ExperienceSection({ experiences }: ExperienceSectionProp
 
                       {/* Meta Information (Dates & Location) */}
                       <div className="flex flex-wrap items-center gap-y-1.5 gap-x-4 text-xs text-gray-400 mb-4 pb-3 border-b border-white/5">
-                        <div className="flex items-center gap-1.5 font-mono text-emerald-400/90">
-                          <Calendar className="w-3.5 h-3.5 text-green-400" />
-                          <span>
-                            {exp.startDate} – {exp.isCurrent ? 'Present' : exp.endDate || 'Present'}
-                          </span>
-                        </div>
+                        {(exp.startDate || exp.isCurrent || exp.endDate) && (
+                          <div className="flex items-center gap-1.5 font-mono text-emerald-400/90">
+                            <Calendar className="w-3.5 h-3.5 text-green-400" />
+                            <span>
+                              {exp.startDate
+                                ? `${exp.startDate} – ${exp.isCurrent ? 'Present' : exp.endDate || 'Present'}`
+                                : exp.isCurrent
+                                ? 'Present'
+                                : exp.endDate || ''}
+                            </span>
+                          </div>
+                        )}
 
                         {exp.location && (
                           <div className="flex items-center gap-1 text-gray-400">

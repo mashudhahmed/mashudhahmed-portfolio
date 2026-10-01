@@ -143,10 +143,6 @@ export default function AdminExperiencePage() {
       showToast('Company name and Position are required.', 'error');
       return;
     }
-    if (!formData.startDate.trim()) {
-      showToast('Start date is required.', 'error');
-      return;
-    }
 
     setSubmitting(true);
     const endpoint = editingExperience ? `/experience/${editingExperience.id}` : '/experience';
@@ -384,11 +380,19 @@ export default function AdminExperiencePage() {
                     <span>•</span>
                     <span>{exp.employmentType}</span>
 
-                    <span>•</span>
-                    <span className="inline-flex items-center gap-1 font-mono text-gray-300">
-                      <Calendar className="w-3 h-3 text-green-400" />
-                      {exp.startDate} – {exp.isCurrent ? 'Present' : exp.endDate || 'Present'}
-                    </span>
+                    {(exp.startDate || exp.isCurrent || exp.endDate) && (
+                      <>
+                        <span>•</span>
+                        <span className="inline-flex items-center gap-1 font-mono text-gray-300">
+                          <Calendar className="w-3 h-3 text-green-400" />
+                          {exp.startDate
+                            ? `${exp.startDate} – ${exp.isCurrent ? 'Present' : exp.endDate || 'Present'}`
+                            : exp.isCurrent
+                            ? 'Present'
+                            : exp.endDate || ''}
+                        </span>
+                      </>
+                    )}
 
                     {exp.location && (
                       <>
@@ -469,9 +473,16 @@ export default function AdminExperiencePage() {
 
       {/* Add / Edit Experience Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl w-full p-6 md:p-8 shadow-2xl space-y-6 my-8">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-4">
+        <div
+          className="fixed inset-0 z-[999] flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header (Fixed at top) */}
+            <div className="flex items-center justify-between p-5 md:p-6 border-b border-gray-800 bg-gray-900/90 backdrop-blur-sm flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400">
                   <Briefcase className="w-5 h-5" />
@@ -495,7 +506,9 @@ export default function AdminExperiencePage() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
+              {/* Modal Body (Scrollable) */}
+              <div className="p-5 md:p-6 space-y-5 overflow-y-auto flex-1">
               {/* Company & Position */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -591,14 +604,13 @@ export default function AdminExperiencePage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
                   <label className="block text-xs font-mono text-gray-300 mb-1.5">
-                    Start Date <span className="text-red-400">*</span>
+                    Start Date
                   </label>
                   <input
                     type="text"
-                    required
                     value={formData.startDate}
                     onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    placeholder="e.g. 2024 or Jan 2024"
+                    placeholder="e.g. 2024 or Jan 2024 (Optional)"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-gray-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
@@ -715,8 +727,10 @@ export default function AdminExperiencePage() {
                 />
               </div>
 
-              {/* Modal Action Buttons */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+              </div>
+
+              {/* Fixed Footer with Actions */}
+              <div className="p-4 md:p-5 border-t border-gray-800 bg-gray-900/90 backdrop-blur-sm flex-shrink-0 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}

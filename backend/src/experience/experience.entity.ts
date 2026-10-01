@@ -23,8 +23,8 @@ export class Experience {
   @Column({ length: 100, default: 'Dhaka, Bangladesh' })
   location!: string;
 
-  @Column({ length: 50 })
-  startDate!: string;
+  @Column({ length: 50, nullable: true, default: '' })
+  startDate?: string;
 
   @Column({ length: 50, nullable: true })
   endDate?: string;
@@ -32,8 +32,8 @@ export class Experience {
   @Column({ default: false })
   isCurrent!: boolean;
 
-  @Column('text')
-  description!: string;
+  @Column('text', { nullable: true, default: '' })
+  description?: string;
 
   @Column('simple-array', { nullable: true })
   technologies!: string[];
